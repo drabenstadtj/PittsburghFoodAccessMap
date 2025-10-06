@@ -1,5 +1,5 @@
 from backend.app import app
 
 @app.route('/reports')
-def admin_dashboard():
+def reports():
     return 'reports dashboard'
