@@ -1,0 +1,133 @@
+{
+   "type": "FeatureCollection",
+   "features": [{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4418, -79.972]
+	   },
+	   "properties": {
+		   "name": "sample 1"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4428, -79.962]
+	   },
+	   "properties": {
+		   "name": "sample 9"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4413, -79.968]
+	   },
+	   "properties": {
+		   "name": "sample 10"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4399, -79.972]
+	   },
+	   "properties": {
+		   "name": "sample 11"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4412, -79.969]
+	   },
+	   "properties": {
+		   "name": "sample 12"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4393, -79.984]
+	   },
+	   "properties": {
+		   "name": "sample 13"
+	   }
+   },{
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4421, -79.974]
+	   },
+	   "properties": {
+		   "name": "sample 14"
+	   }
+   }, {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.7, -80.00]
+	   },
+	   "properties": {
+		   "name": "sample 2"
+	   }
+   }, {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.5418, -79.972]
+	   },
+	   "properties": {
+		   "name": "sample 3"
+	   }
+   }, {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.50, -79.902]
+	   },
+	   "properties": {
+		   "name": "sample 4"
+	   }
+   }, {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4318, -79.942]
+	   },
+	   "properties": {
+		   "name": "sample 5"
+	   }
+   },
+   {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.4918, -79.872]
+	   },
+	   "properties": {
+		   "name": "sample 6"
+	   }
+   },
+   {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.2418, -79.7]
+	   },
+	   "properties": {
+		   "name": "sample 7"
+	   }
+   },
+   {
+	   "type": "Feature",
+	   "geometry": {
+		   "type": "Point",
+		   "coordinates": [40.308, -79.672]
+	   },
+	   "properties": {
+		   "name": "sample 8"
+	   }
+   }]
+}
