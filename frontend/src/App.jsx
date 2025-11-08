@@ -1,5 +1,5 @@
 import './App.css';
-import './dist/leaflet.css';
+import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import sampleData from './samplegeo.json';
 import Navbar from './Navbar.jsx';
