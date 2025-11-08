@@ -55,10 +55,15 @@ function App() {
   // async call to get food locations from backend
   useEffect(() => {
     const fetchLocations = async () => {
-      const response = await fetch('http://localhost:5000/api/food-resources');
-      const data = await response.json();
-      setData(data.features);
-    };
+    try {
+        const response = await fetch('http://localhost:5000/api/food-resources');
+        const data = await response.json();
+        setData(data.features);
+    }
+    catch (error) {
+      console.error("Failed to fetch food locations: ", error);
+    }
+  };
     fetchLocations();
   }, []);
   
