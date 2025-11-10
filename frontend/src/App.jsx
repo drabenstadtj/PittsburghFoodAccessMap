@@ -3,8 +3,8 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import sampleData from './samplegeo.json';
 import Navbar from './Navbar.jsx';
-import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl} from 'react-leaflet';
 
 // Custom Icons
 const createCustomIcon = (type) => {
@@ -49,31 +49,54 @@ const formatHours = (hours) => {
 
 function App() {
   const [sidebarOpen, setSideBarOpen] = useState(true);
-  const collect = sampleData.features;
+  const collect = sampleData.features; // sample data used for testing frontend
+  const [locationData, setData] = useState([]);
+
+  // async call to get food locations from backend
+  useEffect(() => {
+    const fetchLocations = async () => {
+    try {
+        const response = await fetch('http://localhost:5000/api/food-resources');
+        const data = await response.json();
+        setData(data.features);
+    }
+    catch (error) {
+      console.error("Failed to fetch food locations: ", error);
+    }
+  };
+    fetchLocations();
+  }, []);
+  
   const handleViewSidebar = () => {
     setSideBarOpen(!sidebarOpen);
   };
+
   return (
     <div className="App">
       <Navbar isOpen={sidebarOpen} toggleSidebar={handleViewSidebar} />
       <MapContainer 
         center={[40.4418, -79.972]} 
-        zoom={13} 
+        zoom={13}
         scrollWheelZoom={true}
         className="map-container"
+        zoomControl={false}
       >
+      <ZoomControl position="bottomright"/>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {collect.map((p, index) => {
+        {locationData.map((p, index) => {
           const { properties, geometry } = p;
           const { name, resource_type, address, phone, website, description, benefits } = properties;
           
+          const [lon, lat] = geometry.coordinates; // our DB stores coordinates in lon,lat order but leaflet expects lat,lon
+
+          // plot points
           return (
             <Marker 
               key={`${name}-${index}`} 
-              position={geometry.coordinates}
+              position={[lat, lon]}
               icon={createCustomIcon(resource_type)}
             >
               <Popup className="custom-popup">
