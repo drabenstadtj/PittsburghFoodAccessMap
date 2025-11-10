@@ -186,6 +186,13 @@ body, html, #root, .App {
   left: 0;
 }
 
+#sidebar-content {
+  padding-top: 45px;
+}
+#sidebar-filters {
+  padding-bottom: 45px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .sidebar {
