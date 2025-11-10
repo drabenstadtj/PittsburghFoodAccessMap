@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, request
 from app.models.food_resource import FoodResource
 from app.database.db import db
+from app.utils.auth_utils import admin_required
 
 food_resource_bp = Blueprint("food_resource_bp", __name__)
 
 def resource_to_geojson(resource):
-    # Convert FoodResource object to GeoJSON feature format.
+    """Convert FoodResource object to GeoJSON feature format."""
     return {
         "type": "Feature",
         "geometry": {
@@ -27,7 +28,10 @@ def resource_to_geojson(resource):
 
 @food_resource_bp.route("/api/food-resources", methods=["GET"])
 def get_food_resources():
-    # Support filtering by type, neighborhood, etc.
+    """
+    Get all active food resources with optional filtering.
+    Public endpoint - no authentication required.
+    """
     resource_type = request.args.get('type')
     neighborhood = request.args.get('neighborhood')
     
@@ -39,6 +43,7 @@ def get_food_resources():
         query = query.filter_by(neighborhood=neighborhood)
     
     resources = query.all()
+    
     # Return GeoJSON format for map compatibility
     return jsonify({
         "type": "FeatureCollection",
@@ -47,7 +52,10 @@ def get_food_resources():
 
 @food_resource_bp.route("/api/food-resources/<int:id>", methods=["GET"])
 def get_food_resource(id):
-    # Get single resource details.
+    """
+    Get single resource details.
+    Public endpoint - no authentication required.
+    """
     resource = FoodResource.query.get(id)
     
     if not resource or not resource.is_active:
@@ -56,8 +64,12 @@ def get_food_resource(id):
     return jsonify(resource.to_dict())
 
 @food_resource_bp.route("/api/food-resources", methods=["POST"])
+@admin_required
 def create_food_resource():
-    # Admin only - create new resource.
+    """
+    Create new food resource.
+    Admin only endpoint.
+    """
     data = request.get_json()
     
     # Validate required fields
@@ -66,19 +78,28 @@ def create_food_resource():
         if field not in data:
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
+    # Validate coordinates
+    try:
+        lat = float(data['latitude'])
+        lng = float(data['longitude'])
+        if not (-90 <= lat <= 90) or not (-180 <= lng <= 180):
+            return jsonify({"error": "Invalid coordinates"}), 400
+    except (ValueError, TypeError):
+        return jsonify({"error": "Latitude and longitude must be valid numbers"}), 400
+    
     # Create new resource
     try:
         resource = FoodResource(
-            name=data['name'],
-            resource_type=data['resource_type'],
-            address=data['address'],
-            neighborhood=data.get('neighborhood'),
-            latitude=data['latitude'],
-            longitude=data['longitude'],
-            hours=data.get('hours'),
-            phone=data.get('phone'),
-            website=data.get('website'),
-            description=data.get('description')
+            name=data['name'].strip(),
+            resource_type=data['resource_type'].strip(),
+            address=data['address'].strip(),
+            neighborhood=data.get('neighborhood', '').strip() or None,
+            latitude=lat,
+            longitude=lng,
+            hours=data.get('hours', '').strip() or None,
+            phone=data.get('phone', '').strip() or None,
+            website=data.get('website', '').strip() or None,
+            description=data.get('description', '').strip() or None
         )
         
         db.session.add(resource)
@@ -91,8 +112,12 @@ def create_food_resource():
         return jsonify({"error": str(e)}), 500
 
 @food_resource_bp.route("/api/food-resources/<int:id>", methods=["PUT"])
+@admin_required
 def update_food_resource(id):
-    # Admin only - update resource.
+    """
+    Update existing food resource.
+    Admin only endpoint.
+    """
     resource = FoodResource.query.get(id)
     
     if not resource:
@@ -103,39 +128,55 @@ def update_food_resource(id):
     try:
         # Update fields if provided
         if 'name' in data:
-            resource.name = data['name']
+            resource.name = data['name'].strip()
         if 'resource_type' in data:
-            resource.resource_type = data['resource_type']
+            resource.resource_type = data['resource_type'].strip()
         if 'address' in data:
-            resource.address = data['address']
+            resource.address = data['address'].strip()
         if 'neighborhood' in data:
-            resource.neighborhood = data['neighborhood']
+            resource.neighborhood = data['neighborhood'].strip() or None
+        
+        # Validate coordinates if provided
         if 'latitude' in data:
-            resource.latitude = data['latitude']
+            lat = float(data['latitude'])
+            if not (-90 <= lat <= 90):
+                return jsonify({"error": "Invalid latitude"}), 400
+            resource.latitude = lat
+        
         if 'longitude' in data:
-            resource.longitude = data['longitude']
+            lng = float(data['longitude'])
+            if not (-180 <= lng <= 180):
+                return jsonify({"error": "Invalid longitude"}), 400
+            resource.longitude = lng
+        
         if 'hours' in data:
-            resource.hours = data['hours']
+            resource.hours = data['hours'].strip() or None
         if 'phone' in data:
-            resource.phone = data['phone']
+            resource.phone = data['phone'].strip() or None
         if 'website' in data:
-            resource.website = data['website']
+            resource.website = data['website'].strip() or None
         if 'description' in data:
-            resource.description = data['description']
+            resource.description = data['description'].strip() or None
         if 'is_active' in data:
-            resource.is_active = data['is_active']
+            resource.is_active = bool(data['is_active'])
         
         db.session.commit()
         
         return jsonify(resource.to_dict())
     
+    except ValueError as e:
+        return jsonify({"error": "Invalid coordinate values"}), 400
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 @food_resource_bp.route("/api/food-resources/<int:id>", methods=["DELETE"])
+@admin_required
 def delete_food_resource(id):
-    # Admin only - soft delete a resource.
+    """
+    Soft delete a food resource.
+    Admin only endpoint.
+    """
     resource = FoodResource.query.get(id)
     
     if not resource:

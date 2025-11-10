@@ -2,53 +2,41 @@ from flask import Blueprint, jsonify, request, session
 from app.models.user import User
 from app.database.db import db
 from datetime import datetime
-from functools import wraps
+from app.utils.auth_utils import login_required, admin_required, get_current_user
 
 user_bp = Blueprint("user_bp", __name__)
 
-# Simple authentication decorator
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({"error": "Login required"}), 401
-        return f(*args, **kwargs)
-    return decorated_function
-
-def admin_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            return jsonify({"error": "Login required"}), 401
-        
-        user = User.query.get(session['user_id'])
-        if not user or not user.is_admin:
-            return jsonify({"error": "Admin access required"}), 403
-        
-        return f(*args, **kwargs)
-    return decorated_function
-
 @user_bp.route("/api/auth/register", methods=["POST"])
 def register():
-    # Register a new user.
+    """Register a new user."""
     data = request.get_json()
     
     # Validate required fields
     if not data.get('name') or not data.get('email') or not data.get('password'):
         return jsonify({"error": "Name, email, and password are required"}), 400
     
+    # Validate email format
+    email = data['email'].strip().lower()
+    if '@' not in email:
+        return jsonify({"error": "Invalid email format"}), 400
+    
+    # Validate password strength
+    password = data['password']
+    if len(password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters"}), 400
+    
     # Check if email already exists
-    if User.query.filter_by(email=data['email']).first():
+    if User.query.filter_by(email=email).first():
         return jsonify({"error": "Email already registered"}), 400
     
     try:
         user = User(
-            name=data['name'],
-            email=data['email'],
-            organization=data.get('organization'),
-            phone=data.get('phone')
+            name=data['name'].strip(),
+            email=email,
+            organization=data.get('organization', '').strip() or None,
+            phone=data.get('phone', '').strip() or None
         )
-        user.set_password(data['password'])
+        user.set_password(password)
         
         # First user becomes admin
         if User.query.count() == 0:
@@ -64,17 +52,18 @@ def register():
         
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": f"Registration failed: {str(e)}"}), 500
 
 @user_bp.route("/api/auth/login", methods=["POST"])
 def login():
-    # Login user and create session.
+    """Login user and create session."""
     data = request.get_json()
     
     if not data.get('email') or not data.get('password'):
         return jsonify({"error": "Email and password required"}), 400
     
-    user = User.query.filter_by(email=data['email']).first()
+    email = data['email'].strip().lower()
+    user = User.query.filter_by(email=email).first()
     
     if not user or not user.check_password(data['password']):
         return jsonify({"error": "Invalid email or password"}), 401
@@ -87,8 +76,10 @@ def login():
     db.session.commit()
     
     # Create session
+    session.permanent = True  # Use PERMANENT_SESSION_LIFETIME from config
     session['user_id'] = user.id
     session['is_admin'] = user.is_admin
+    session['email'] = user.email
     
     return jsonify({
         "message": "Login successful",
@@ -97,47 +88,67 @@ def login():
 
 @user_bp.route("/api/auth/logout", methods=["POST"])
 def logout():
-    # Logout user and clear session.
+    """Logout user and clear session."""
     session.clear()
     return jsonify({"message": "Logged out successfully"})
 
 @user_bp.route("/api/auth/me", methods=["GET"])
 @login_required
-def get_current_user():
-    # Get current logged-in user info.
-    user = User.query.get(session['user_id'])
+def get_current_user_info():
+    """Get current logged-in user info."""
+    user = get_current_user()
     if not user:
         return jsonify({"error": "User not found"}), 404
     
     return jsonify(user.to_dict(include_email=True))
 
+@user_bp.route("/api/auth/check", methods=["GET"])
+def check_auth():
+    """Check if user is authenticated and return basic info."""
+    user = get_current_user()
+    
+    if not user:
+        return jsonify({
+            "authenticated": False,
+            "is_admin": False
+        })
+    
+    return jsonify({
+        "authenticated": True,
+        "is_admin": user.is_admin,
+        "user": user.to_dict()
+    })
+
 @user_bp.route("/api/users", methods=["GET"])
 @admin_required
 def get_users():
-    # Get all users (admin only).
+    """Get all users (admin only)."""
     users = User.query.all()
     return jsonify([u.to_dict(include_email=True) for u in users])
 
 @user_bp.route("/api/users/<int:id>", methods=["GET"])
 @login_required
 def get_user(id):
-    # Get specific user by ID.
+    """Get specific user by ID."""
     user = User.query.get(id)
     
     if not user:
         return jsonify({"error": "User not found"}), 404
     
+    current_user = get_current_user()
     # Only admin or the user themselves can see email
-    include_email = session.get('is_admin') or session.get('user_id') == id
+    include_email = current_user.is_admin or current_user.id == id
     
     return jsonify(user.to_dict(include_email=include_email))
 
 @user_bp.route("/api/users/<int:id>", methods=["PUT"])
 @login_required
 def update_user(id):
-    # Update user profile.
+    """Update user profile."""
+    current_user = get_current_user()
+    
     # Users can only update their own profile unless admin
-    if session.get('user_id') != id and not session.get('is_admin'):
+    if current_user.id != id and not current_user.is_admin:
         return jsonify({"error": "Unauthorized"}), 403
     
     user = User.query.get(id)
@@ -149,28 +160,36 @@ def update_user(id):
     try:
         # Update allowed fields
         if 'name' in data:
-            user.name = data['name']
+            user.name = data['name'].strip()
         if 'organization' in data:
-            user.organization = data['organization']
+            user.organization = data['organization'].strip() or None
         if 'phone' in data:
-            user.phone = data['phone']
+            user.phone = data['phone'].strip() or None
         
         # Only allow email update if not taken
         if 'email' in data and data['email'] != user.email:
-            if User.query.filter_by(email=data['email']).first():
+            new_email = data['email'].strip().lower()
+            if User.query.filter_by(email=new_email).first():
                 return jsonify({"error": "Email already in use"}), 400
-            user.email = data['email']
+            user.email = new_email
         
         # Only admin can change admin status
-        if 'is_admin' in data and session.get('is_admin'):
+        if 'is_admin' in data and current_user.is_admin:
+            # Prevent removing last admin
+            if user.is_admin and not data['is_admin']:
+                admin_count = User.query.filter_by(is_admin=True, is_active=True).count()
+                if admin_count <= 1:
+                    return jsonify({"error": "Cannot remove the last admin"}), 400
             user.is_admin = data['is_admin']
         
         # Only admin can deactivate accounts
-        if 'is_active' in data and session.get('is_admin'):
+        if 'is_active' in data and current_user.is_admin:
             user.is_active = data['is_active']
         
         # Update password if provided
         if 'password' in data:
+            if len(data['password']) < 8:
+                return jsonify({"error": "Password must be at least 8 characters"}), 400
             user.set_password(data['password'])
         
         db.session.commit()
@@ -187,7 +206,7 @@ def update_user(id):
 @user_bp.route("/api/users/<int:id>", methods=["DELETE"])
 @admin_required
 def delete_user(id):
-    # Soft delete user (admin only).
+    """Soft delete user (admin only)."""
     user = User.query.get(id)
     
     if not user:
