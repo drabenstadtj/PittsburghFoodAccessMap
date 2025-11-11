@@ -109,19 +109,20 @@ FOOD_RESOURCES = [
 def seed_database():
     # Seed the database with sample data.
     app = create_app("development")
-    
+
     with app.app_context():
         # Clear existing food resources
+        print("App config SQLALCHEMY_DATABASE_URI:", app.config.get("SQLALCHEMY_DATABASE_URI"))
         print("Clearing existing food resources...")
         FoodResource.query.delete()
         
-        # Add sample users if none exist
-        if User.query.count() == 0:
-            print("Adding sample users...")
-            admin = User(name="Admin User", email="admin@example.com")
-            test = User(name="Test User", email="test@example.com")
-            db.session.add(admin)
-            db.session.add(test)
+        # # Add sample users if none exist
+        # if User.query.count() == 0:
+        #     print("Adding sample users...")
+        #     admin = User(name="Admin User", email="admin@example.com")
+        #     test = User(name="Test User", email="test@example.com")
+        #     db.session.add(admin)
+        #     db.session.add(test)
         
         # Add food resources
         print("Adding food resources...")
@@ -134,8 +135,10 @@ def seed_database():
         
         # Print summary
         print(f"\nDatabase seeded successfully!")
-        print(f"   - {User.query.count()} users")
+        # print(f"   - {User.query.count()} users")
         print(f"   - {FoodResource.query.count()} food resources")
 
 if __name__ == "__main__":
+
+
     seed_database()

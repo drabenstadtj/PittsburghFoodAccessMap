@@ -22,10 +22,11 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = (
-        os.environ.get("DATABASE_URL")
-        or f"sqlite:///{os.path.join(BASE_DIR, './database/dev.db')}"
-    )
+    
+    # FIX: Use absolute path for database location
+    # This ensures the database goes to app/database/dev.db
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'database', 'dev.db')}"
+    
     SESSION_COOKIE_SECURE = False  # HTTP is fine for development
 
 class ProductionConfig(Config):
