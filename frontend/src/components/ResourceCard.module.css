@@ -1,0 +1,67 @@
+@import "../styles/tokens.css";
+
+.card {
+  composes: card from "../styles/tokens.css";
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 16px;
+}
+.title {
+  margin: 0;
+  font-size: 16px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pill {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #f1f3f5;
+  color: var(--muted);
+  margin-left: 6px;
+}
+.body {
+  font-size: 14px;
+  color: var(--muted);
+}
+.meta {
+  margin: 4px 0;
+}
+.open {
+  color: #2f9e44;
+}
+.closed {
+  color: #d63939;
+}
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.btn {
+  composes: btn from "../styles/tokens.css";
+  flex: 1;
+}
+.primary {
+  composes: btnPrimary from "../styles/tokens.css";
+  flex: 1;
+}

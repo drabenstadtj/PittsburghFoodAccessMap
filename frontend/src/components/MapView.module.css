@@ -1,0 +1,27 @@
+@import "../styles/tokens.css";
+
+.container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+.map {
+  height: 100%;
+  width: 100%;
+}
+.popupActions {
+  display: flex;
+  gap: 8px;
+}
+.popupButton {
+  composes: btn from "../styles/tokens.css";
+  flex: 1;
+  padding: 6px;
+  font-size: 12px;
+}
+.popupPrimary {
+  composes: btnPrimary from "../styles/tokens.css";
+  flex: 1;
+  padding: 6px;
+  font-size: 12px;
+}

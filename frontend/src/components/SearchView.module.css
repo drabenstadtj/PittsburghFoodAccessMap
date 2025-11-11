@@ -1,0 +1,52 @@
+@import "../styles/tokens.css";
+
+.root {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.h2 {
+  margin-bottom: 20px;
+}
+.inputWrap {
+  margin-bottom: 20px;
+}
+.input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+}
+.quick {
+  margin-bottom: 30px;
+}
+.h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.chipBtn {
+  composes: btn from "../styles/tokens.css";
+  border-radius: 20px;
+  padding: 8px 16px;
+}
+.chipBtnActive {
+  composes: btnPrimary from "../styles/tokens.css";
+  border-radius: 20px;
+  padding: 8px 16px;
+}
+.listBtn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}

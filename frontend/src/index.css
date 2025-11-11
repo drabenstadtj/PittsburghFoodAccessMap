@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Fix for Leaflet controls on mobile */
+.leaflet-control-container .leaflet-top,
+.leaflet-control-container .leaflet-bottom {
+  z-index: 999 !important;
+}
+
+/* Ensure popups are visible */
+.leaflet-popup {
+  z-index: 1000 !important;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .leaflet-control-zoom {
+    display: none;
+  }
+}

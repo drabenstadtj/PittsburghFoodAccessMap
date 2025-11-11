@@ -1,23 +1,9 @@
-# Pittsburgh Food Access Map - Frontend
-
-React frontend for the food resource map.
-
-## Quick Start
-```bash
-# Setup
-npm install
-
-# Run
-npm start
-```
-
-Frontend runs at 'http://localhost:3000'
-
-## What's Working Now
-- Basic react app that runs and displays a map with some plotted points
-
-## Team Members
-- Jack Drabenstadt
-- Lucy Guo  
-- Gleb Ksianevich
-- Cole Swierczek
+# TODO
+- Fix date formatting in Resource Card (currently doesnt format -- military time)
+- fix chip border and radius (formatting nonexistent minus green background)
+- mobile searching view is broken (results arent displayed, only filtered: unintuitive)
+- Get missing hours for resources 
+- Implement reporting (doesn't exist at all currently)
+- either go through and tag all entries with neighborhood when importing or calculate it on the fly with geojson and the pittsburgh dataset 
+- filtering and category mapping ignores convenience stores currently
+- low prio: break out mobile and desktop views into separate components

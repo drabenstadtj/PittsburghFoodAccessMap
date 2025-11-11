@@ -1,0 +1,115 @@
+@import "../styles/tokens.css";
+
+.root {
+  background: var(--bg);
+  padding: 20px;
+  padding-bottom: 0; /* reset */
+  height: 100%;
+  overflow-y: auto;
+}
+
+.root::after {
+  content: "";
+  display: block;
+  height: calc(96px + env(safe-area-inset-bottom, 16px));
+}
+
+/* header */
+.bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.title {
+  margin: 0;
+  font-size: 20px;
+}
+.close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* sections */
+.section {
+  margin-bottom: 24px;
+}
+.sectionTitle {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+.controls {
+  display: flex;
+  gap: 8px;
+}
+.btn {
+  composes: btn from "../styles/tokens.css";
+  font-size: 12px;
+  padding: 4px 8px;
+}
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.checkbox {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+}
+.icon {
+  margin-right: 8px;
+  font-size: 18px;
+}
+.only {
+  composes: btn from "../styles/tokens.css";
+  margin-left: auto;
+  font-size: 12px;
+}
+.select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--bg);
+}
+.rangeMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted-2);
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 10px;
+  padding: 12px 0 calc(16px + env(safe-area-inset-bottom, 16px));
+  background: var(--bg);
+  border-top: 1px solid var(--line-2);
+  z-index: 1; 
+}
+
+.apply {
+  composes: btnPrimary from "../styles/tokens.css";
+  flex: 1;
+  padding: 12px;
+  font-weight: 700;
+}
+
+.reset {
+  composes: btn from "../styles/tokens.css";
+  flex: 1;
+  padding: 12px;
+  font-weight: 700;
+  background: var(--surface);
+  color: var(--muted);
+}
