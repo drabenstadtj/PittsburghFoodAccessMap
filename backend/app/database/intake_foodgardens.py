@@ -10,7 +10,7 @@ from app import create_app
 from app.database.db import db
 from app.models.food_resource import FoodResource
 
-#  category normalization (keep simple for now) 
+# category normalization (simple)
 RAW_TO_RESOURCE_TYPE = {
     "community-farm": "community_farm",
     "community-garden": "community_garden",
@@ -23,10 +23,7 @@ RAW_TO_RESOURCE_TYPE = {
 }
 
 def first_mapped_category(raw: str) -> str:
-    """
-    The sheet's 'category' can be pipe-delimited.
-    Take the first token that maps, else 'other'.
-    """
+    """Take first pipe-delimited token that maps, else 'other'."""
     if not raw or pd.isna(raw):
         return "other"
     for tok in str(raw).split("|"):
@@ -40,7 +37,6 @@ def first_mapped_category(raw: str) -> str:
 def read_tabular(path: Path) -> pd.DataFrame:
     if path.suffix.lower() in {".xlsx", ".xls"}:
         return pd.read_excel(path)
-    # Fallback: try CSV with delimiter sniffing, but your pasted sample is TSV-like.
     try:
         return pd.read_csv(path)
     except Exception:
@@ -56,12 +52,6 @@ def fmt_address(street, city, state, zip_code):
 
 
 def row_to_resource_kwargs(row: pd.Series) -> dict:
-    """
-    Maps one sheet row -> FoodResource(**kwargs)
-    Expected columns:
-      urban_grower, category, url, street_address, city, state, zip_code,
-      country, latitude, longitude
-    """
     name = row.get("urban_grower") or row.get("name")
     website = row.get("url")
     resource_type = first_mapped_category(row.get("category"))
@@ -72,21 +62,14 @@ def row_to_resource_kwargs(row: pd.Series) -> dict:
         row.get("zip_code"),
     )
 
-    # Use city as neighborhood when city == Pittsburgh and there’s no better source.
     neighborhood = row.get("neighborhood")
     if not neighborhood and str(row.get("city") or "").lower().strip() == "pittsburgh":
-        neighborhood = None  # leave null; you can later backfill from a polygon join
+        neighborhood = None
 
-    # Coerce lat/lon
     lat = row.get("latitude")
     lon = row.get("longitude")
     latitude = float(lat) if pd.notna(lat) else None
     longitude = float(lon) if pd.notna(lon) else None
-
-    hours = None  # sheet has no hours; keep null
-    phone = None  # not provided in this sheet
-
-    description = "Imported from Grow Pittsburgh directory"  # tweak if you want
 
     return dict(
         name=name,
@@ -95,18 +78,15 @@ def row_to_resource_kwargs(row: pd.Series) -> dict:
         neighborhood=neighborhood,
         latitude=latitude,
         longitude=longitude,
-        phone=phone,
+        phone=None,
         website=website,
-        description=description,
-        hours=hours,  # JSON column; None is fine
+        description="Imported from Grow Pittsburgh directory",
+        hours=None,
     )
 
 
 def upsert_resource(row_kwargs: dict) -> tuple[str, FoodResource]:
-    """
-    Upsert by (name, address). Adjust if you prefer a different key.
-    Returns ("created"|"updated"|"skipped", instance).
-    """
+    """Upsert by (name, address)."""
     name = (row_kwargs.get("name") or "").strip()
     address = (row_kwargs.get("address") or "").strip()
     if not name:
@@ -118,7 +98,6 @@ def upsert_resource(row_kwargs: dict) -> tuple[str, FoodResource]:
     )
     existing = q.first()
     if existing:
-        # Update selected fields
         for k, v in row_kwargs.items():
             setattr(existing, k, v)
         return "updated", existing
@@ -128,7 +107,7 @@ def upsert_resource(row_kwargs: dict) -> tuple[str, FoodResource]:
     return "created", inst
 
 
-def import_sheet(path: Path, dry_run: bool, truncate: bool) -> dict:
+def import_sheet(path: Path, truncate: bool) -> dict:
     df = read_tabular(path)
     expected = {
         "urban_grower",
@@ -148,15 +127,14 @@ def import_sheet(path: Path, dry_run: bool, truncate: bool) -> dict:
 
     app = create_app("development")
     with app.app_context():
-        if truncate and not dry_run:
+        if truncate:
             FoodResource.query.delete()
             db.session.commit()
 
         created = updated = skipped = 0
 
         for _, row in df.iterrows():
-            kwargs = row_to_resource_kwargs(row)
-            status, _inst = upsert_resource(kwargs)
+            status, _inst = upsert_resource(row_to_resource_kwargs(row))
             if status == "created":
                 created += 1
             elif status == "updated":
@@ -164,22 +142,18 @@ def import_sheet(path: Path, dry_run: bool, truncate: bool) -> dict:
             else:
                 skipped += 1
 
-        if dry_run:
-            db.session.rollback()
-        else:
-            db.session.commit()
+        db.session.commit()
 
-        return {"created": created, "updated": updated, "skipped": skipped, "dry_run": dry_run, "truncated": truncate}
+        return {"created": created, "updated": updated, "skipped": skipped, "truncated": truncate}
 
 
 def main():
     p = argparse.ArgumentParser(description="Import food resources from Excel/CSV/TSV into DB.")
-    p.add_argument("path", type=Path, help="Path to .xlsx/.csv/.tsv")
-    p.add_argument("--dry-run", action="store_true", help="Parse and upsert in-memory, then rollback.")
+    p.add_argument("path", type=Path, help="Path to .xlsx/.csv/.tsv file")
     p.add_argument("--truncate", action="store_true", help="Delete all existing FoodResource rows before import.")
     args = p.parse_args()
 
-    summary = import_sheet(args.path, dry_run=args.dry_run, truncate=args.truncate)
+    summary = import_sheet(args.path, truncate=args.truncate)
     print(json.dumps(summary, indent=2))
 
 
