@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./DetailModal.module.css";
+
+import ReportModal from "./ReportModal";
 
 // converts military time to 12 hour time 
 function military_to_twelve(t)
@@ -8,7 +10,6 @@ function military_to_twelve(t)
   // check that given argument is valid
   if (!t || typeof t !== "string") return t;
 
-  // Match patterns like "9:00-17:00" or "10:00-14:00"
   return t.replace(
     /\b(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})\b/g,
     (_, h1, m1, h2, m2) => {
@@ -24,6 +25,8 @@ function military_to_twelve(t)
 }
 
 export default function DetailModal({ resource, onClose }) {
+  const [showReportModal, setShowReportModal] = useState(false);
+
   if (!resource) return null;
 
   const iconCfg = RESOURCE_ICONS[resource.properties.resource_type];
@@ -106,11 +109,18 @@ export default function DetailModal({ resource, onClose }) {
 
           <div className={styles.footer}>
             <button
-              onClick={() => alert("Report functionality would open here")}
+              onClick={() => setShowReportModal(true)}
               className={styles.reportBtn}
             >
               Report an Issue with This Location
             </button>
+
+            {showReportModal && (
+              <ReportModal
+                resource={resource}
+                onClose={() => setShowReportModal(false)}
+              />
+            )}
           </div>
         </div>
       </div>
