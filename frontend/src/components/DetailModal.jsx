@@ -2,6 +2,27 @@ import React from "react";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./DetailModal.module.css";
 
+// converts military time to 12 hour time 
+function military_to_twelve(t)
+{
+  // check that given argument is valid
+  if (!t || typeof t !== "string") return t;
+
+  // Match patterns like "9:00-17:00" or "10:00-14:00"
+  return t.replace(
+    /\b(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})\b/g,
+    (_, h1, m1, h2, m2) => {
+      const format = (h, m) => {
+        h = parseInt(h, 10);
+        const period = h >= 12 ? "PM" : "AM";
+        h = h % 12 || 12; // 0 => 12
+        return `${h}:${m} ${period}`;
+      };
+      return `${format(h1, m1)}-${format(h2, m2)}`;
+    }
+  );
+}
+
 export default function DetailModal({ resource, onClose }) {
   if (!resource) return null;
 
@@ -15,7 +36,7 @@ export default function DetailModal({ resource, onClose }) {
         <div className={styles.header}>
           <div>
             <h2 className={styles.title}>{resource.properties.name}</h2>
-            <div className="chip" style={{ background: chipColor }}>
+            <div className={styles.chip} style={{ background: chipColor }}>
               {iconCfg?.label || resource.properties.resource_type}
             </div>
           </div>
@@ -43,10 +64,11 @@ export default function DetailModal({ resource, onClose }) {
               {typeof hours === "object"
                 ? Object.entries(hours).map(([day, time]) => (
                     <div key={day}>
-                      {day.charAt(0).toUpperCase() + day.slice(1)}: {time}
+                      {day.charAt(0).toUpperCase() + day.slice(1)}: {military_to_twelve(time)}
                     </div>
                   ))
-                : hours}
+                : military_to_twelve(hours)}
+
             </div>
           )}
 

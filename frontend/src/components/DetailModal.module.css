@@ -33,6 +33,13 @@
   font-size: 24px;
 }
 
+.chip {
+  border-radius: 5px;
+  display: inline-block;
+  padding: 5px;
+  width: auto;
+}
+
 .close {
   background: none;
   border: none;

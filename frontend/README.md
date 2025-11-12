@@ -1,6 +1,6 @@
 # TODO
-- Fix date formatting in Resource Card (currently doesnt format -- military time)
-- fix chip border and radius (formatting nonexistent minus green background)
+- ~~Fix date formatting in Resource Card (currently doesnt format -- military time)~~
+- ~~fix chip border and radius (formatting nonexistent minus green background)~~
 - mobile searching view is broken (results arent displayed, only filtered: unintuitive)
 - Get missing hours for resources 
 - Implement reporting (doesn't exist at all currently)
