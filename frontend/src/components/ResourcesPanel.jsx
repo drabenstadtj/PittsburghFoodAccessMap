@@ -7,9 +7,23 @@ export default function ResourcesPanel({
   userLocation,
   onDirections,
   onMoreInfo,
+  isMobile,
+  searchQuery,
+  setSearchQuery,
 }) {
   return (
     <aside className={styles.panel}>
+      {isMobile && (
+        <div className={styles.searchSection}>
+          <input
+            type="text"
+            placeholder="Search by name, address, or neighborhood..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+      )}
       <div className={styles.header}>
         <h2 className={styles.title}>Resources ({filteredResources.length})</h2>
       </div>
@@ -21,7 +35,7 @@ export default function ResourcesPanel({
             userLocation={userLocation}
             onDirections={onDirections}
             onMoreInfo={onMoreInfo}
-            isMobile={false}
+            isMobile={isMobile}
           />
         ))}
       </div>

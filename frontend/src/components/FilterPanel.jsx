@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { PRIMARY_META, PRIMARY_ORDER } from "../constants/categoryMap";
-import { PITTSBURGH_NEIGHBORHOODS } from "../constants/neighborhoods";
 import styles from "./FilterPanel.module.css";
 
 export default function FilterPanel({
@@ -8,8 +7,14 @@ export default function FilterPanel({
   setFilters,
   onClose,
   isMobile,
+  onHelp,
+  userLocation,
 }) {
   const [localFilters, setLocalFilters] = useState(filters);
+
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
 
   const ORDERED_KEYS = useMemo(() => {
     const uniq = Array.from(new Set(PRIMARY_ORDER));
@@ -24,7 +29,6 @@ export default function FilterPanel({
   const handleReset = () => {
     const reset = {
       resourceTypes: [],
-      neighborhood: "All Neighborhoods",
       distance: 2,
       openNow: false,
     };
@@ -98,23 +102,6 @@ export default function FilterPanel({
       </div>
 
       <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Neighborhood</h3>
-        <select
-          value={localFilters.neighborhood}
-          onChange={(e) =>
-            setLocalFilters({ ...localFilters, neighborhood: e.target.value })
-          }
-          className={styles.select}
-        >
-          {PITTSBURGH_NEIGHBORHOODS.map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.section}>
         <h3 className={styles.sectionTitle}>
           Distance: {localFilters.distance} miles
         </h3>
@@ -130,12 +117,17 @@ export default function FilterPanel({
               distance: parseFloat(e.target.value),
             })
           }
-          className="fullwidth"
+          className={styles.rangeInput}
         />
         <div className={styles.rangeMeta}>
           <span>0.5 mi</span>
           <span>10 mi</span>
         </div>
+        {!userLocation && (
+          <p className={styles.distanceNote}>
+            📍 Enable location to use distance filter
+          </p>
+        )}
       </div>
 
       <div className={styles.section}>
@@ -160,6 +152,15 @@ export default function FilterPanel({
           Reset
         </button>
       </div>
+
+      {/* Only show Help button on desktop */}
+      {!isMobile && (
+        <div className={styles.helpFooter}>
+          <button onClick={onHelp} className={styles.help}>
+            Help
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -46,8 +46,78 @@
   justify-content: center;
 }
 
-
 .body {
   font-size: 15px;
   line-height: 1.6;
+}
+
+/* Success state */
+.successContainer {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.successIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: #4CAF50;
+}
+
+.successTitle {
+  margin: 0 0 8px 0;
+  color: #4CAF50;
+}
+
+.successMessage {
+  color: #666;
+  margin: 0;
+}
+
+/* Error state */
+.errorBox {
+  padding: 12px;
+  margin-bottom: 16px;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  color: #c33;
+}
+
+/* Form elements */
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 15px;
+}
+
+.textarea:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.submitButton {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #FFB81C;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #e6a519;
+}
+
+.submitButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }

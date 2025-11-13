@@ -1,10 +1,25 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import LocationHandler from "./LocationHandler";
 import { createCustomIcon } from "../utils/mapUtils";
 import { metaForType } from "../constants/resourceIcons";
 import styles from "./MapView.module.css";
+
+// New component to handle zooming to user location
+function ZoomToLocation({ userLocation }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (userLocation) {
+      map.flyTo(userLocation, 15, {
+        duration: 1.5 // smooth animation
+      });
+    }
+  }, [userLocation, map]);
+  
+  return null;
+}
 
 export default function MapView({
   filteredResources,
@@ -28,7 +43,8 @@ export default function MapView({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <LocationHandler setUserLocation={setUserLocation} />
-
+        <ZoomToLocation userLocation={userLocation} />
+        
         {filteredResources.map((resource) => {
           const meta = metaForType(resource?.properties?.resource_type);
           const [lng, lat] = resource.geometry.coordinates;
@@ -71,7 +87,7 @@ export default function MapView({
             </Marker>
           );
         })}
-
+        
         {userLocation && (
           <Marker
             position={userLocation}

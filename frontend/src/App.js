@@ -1,4 +1,4 @@
-// App.jsx
+// App.js
 import React, {
   useEffect,
   useMemo,
@@ -6,22 +6,13 @@ import React, {
   useRef,
   useLayoutEffect,
 } from "react";
-import {
-  Map,
-  List,
-  Filter,
-  Search,
-  HelpCircle,
-  Crosshair,
-  LocateFixed,
-} from "lucide-react";
+import { Map, List, Filter, HelpCircle, Crosshair } from "lucide-react";
 
 import FilterPanel from "./components/FilterPanel";
 import DetailModal from "./components/DetailModal";
 import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import ResourcesPanel from "./components/ResourcesPanel";
-import SearchView from "./components/SearchView";
 import HelpView from "./components/HelpView";
 
 import { useWindowSize } from "./hooks/useWindowSize";
@@ -29,17 +20,17 @@ import { fetchResources } from "./services/api";
 import { calculateDistance } from "./utils/mapUtils";
 import { RESOURCE_ICONS } from "./constants/resourceIcons";
 import { toPrimary } from "./constants/categoryMap";
-
 import { requestLocation } from "./utils/location";
 
-function PittsburghFoodMap() {
+import styles from "./App.module.css";
+
+function App() {
   const [resources, setResources] = useState([]);
   const [filteredResources, setFilteredResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeView, setActiveView] = useState("map"); // "map" | "list" | "search" | "help"
+  const [activeView, setActiveView] = useState("map");
   const [filters, setFilters] = useState({
     resourceTypes: [],
-    neighborhood: "All Neighborhoods",
     distance: 2,
     openNow: false,
   });
@@ -48,9 +39,9 @@ function PittsburghFoodMap() {
   const [userLocation, setUserLocation] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // measure bottom nav height to avoid overlap on mobile
   const navRef = useRef(null);
   const [navH, setNavH] = useState(72);
+
   useLayoutEffect(() => {
     const update = () => setNavH(navRef.current?.offsetHeight || 72);
     update();
@@ -78,7 +69,6 @@ function PittsburghFoodMap() {
     };
   };
 
-  // initial load
   useEffect(() => {
     (async () => {
       try {
@@ -93,7 +83,6 @@ function PittsburghFoodMap() {
         }
       } catch (err) {
         console.error(err);
-        // fallback mock data (to remove when backend is deployed)
         const types = Object.keys(RESOURCE_ICONS);
         const mock = Array.from({ length: 50 }, (_, i) => ({
           type: "Feature",
@@ -124,23 +113,29 @@ function PittsburghFoodMap() {
     })();
   }, [PITTSBURGH_CENTER]);
 
-  // filtering pipeline
   useEffect(() => {
     let filtered = [...resources];
 
+    // Apply resource type filter first
     if (filters.resourceTypes.length > 0) {
       filtered = filtered.filter((r) =>
         filters.resourceTypes.includes(r.properties.primary_type)
       );
     }
 
-    if (filters.neighborhood !== "All Neighborhoods") {
+    // Apply search filter
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        (r) => r.properties.neighborhood === filters.neighborhood
+        (r) =>
+          r.properties.name.toLowerCase().includes(q) ||
+          r.properties.address?.toLowerCase().includes(q) ||
+          r.properties.neighborhood?.toLowerCase().includes(q)
       );
     }
 
-    if (userLocation) {
+    // Apply distance filter ONLY if userLocation exists
+    if (userLocation && filters.distance) {
       filtered = filtered.filter((r) => {
         const d = calculateDistance(
           userLocation[0],
@@ -152,19 +147,9 @@ function PittsburghFoodMap() {
       });
     }
 
-    // Placeholder for open-now
+    // Apply open now filter
     if (filters.openNow) {
       filtered = filtered.filter(() => Math.random() > 0.3);
-    }
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (r) =>
-          r.properties.name.toLowerCase().includes(q) ||
-          r.properties.address?.toLowerCase().includes(q) ||
-          r.properties.neighborhood?.toLowerCase().includes(q)
-      );
     }
 
     setFilteredResources(filtered);
@@ -178,21 +163,22 @@ function PittsburghFoodMap() {
 
   const handleMoreInfo = (resource) => setSelectedResource(resource);
 
+  const handleShowHelp = () => {
+    // Toggle help on desktop, or just show it on mobile
+    if (!isMobile && activeView === "help") {
+      setActiveView("map"); // Close help and go back to map
+    } else {
+      setActiveView("help");
+    }
+    if (isMobile) {
+      setShowFilters(false);
+    }
+  };
+
   const centerContent = () => {
     if (loading) {
       return (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            fontSize: 18,
-            color: "#6c757d",
-          }}
-        >
-          Loading food resources...
-        </div>
+        <div className={styles.loadingContainer}>Loading food resources...</div>
       );
     }
 
@@ -218,158 +204,93 @@ function PittsburghFoodMap() {
           onDirections={handleGetDirections}
           onMoreInfo={handleMoreInfo}
           isMobile={isMobile}
-        />
-      );
-    }
-
-    if (activeView === "search") {
-      return (
-        <SearchView
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          filters={filters}
-          setFilters={setFilters}
-          setActiveView={setActiveView}
         />
       );
     }
 
-    if (activeView === "help") return <HelpView />;
+    if (activeView === "help")
+      return (
+        <HelpView onClose={() => setActiveView("map")} isMobile={isMobile} />
+      );
     return null;
   };
 
-  // desktop layout
+  // Desktop layout
   if (!isMobile) {
     return (
-      <div
-        style={{
-          display: "flex",
-          height: "100vh",
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        }}
-      >
-        {/* Left: Filters */}
-        <div
-          style={{
-            width: 300,
-            background: "white",
-            borderRight: "1px solid #dee2e6",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              padding: 20,
-              borderBottom: "1px solid #dee2e6",
-              background: "#FFB81C",
-            }}
-          >
-            <h1 style={{ margin: 0, fontSize: 20, color: "black" }}>
-              Pittsburgh Food Access Map
-            </h1>
+      <div className={styles.app}>
+        <div className={styles.leftSidebar}>
+          <div className={styles.header}>
+            <h1 className={styles.headerTitle}>Pittsburgh Food Access Map</h1>
           </div>
 
-          <div style={{ padding: 20, borderBottom: "1px solid #dee2e6" }}>
+          <div className={styles.searchContainer}>
             <input
               type="text"
               placeholder="Search resources..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: "100%",
-                padding: 10,
-                fontSize: 14,
-                border: "1px solid #ced4da",
-                borderRadius: 6,
-              }}
+              className={styles.searchInput}
             />
           </div>
 
-          <div style={{ flex: 1, overflow: "auto" }}>
+          <div className={styles.filterContainer}>
             <FilterPanel
               filters={filters}
               setFilters={setFilters}
               onClose={() => {}}
               isMobile={false}
+              onHelp={handleShowHelp}
+              userLocation={userLocation}
             />
           </div>
         </div>
 
-        {/* Center: Content */}
-        <div style={{ flex: 1, position: "relative" }}>
+        <div className={styles.centerContent}>
           {centerContent()}
 
-          {/* Floating locate button (bottom-right) */}
           {activeView === "map" && (
-            <button
-              onClick={() =>
-                navigator.geolocation?.getCurrentPosition(
-                  (pos) =>
-                    setUserLocation([
-                      pos.coords.latitude,
-                      pos.coords.longitude,
-                    ]),
-                  () =>
-                    alert(
-                      "Unable to get your location. Enable location services."
-                    )
-                )
-              }
-              style={{
-                position: "absolute",
-                bottom: 20,
-                right: 20,
-                zIndex: 1000,
-                background: "white",
-                border: "1px solid rgba(0,0,0,0.15)",
-                borderRadius: "50%",
-                width: 44,
-                height: 44,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-              }}
-              title="Find my location"
-              aria-label="Find my location"
-            >
-              <Crosshair size={20} strokeWidth={2.2} />
-            </button>
-          )}
+            <>
+              <button
+                onClick={() =>
+                  navigator.geolocation?.getCurrentPosition(
+                    (pos) =>
+                      setUserLocation([
+                        pos.coords.latitude,
+                        pos.coords.longitude,
+                      ]),
+                    () =>
+                      alert(
+                        "Unable to get your location. Enable location services."
+                      )
+                  )
+                }
+                className={styles.locateButton}
+                title="Find my location"
+                aria-label="Find my location"
+              >
+                <Crosshair size={20} strokeWidth={2.2} />
+              </button>
 
-          {/* Count badge */}
-          {activeView === "map" && (
-            <div
-              style={{
-                position: "absolute",
-                top: 10,
-                left: 55,
-                zIndex: 1000,
-                background: "white",
-                padding: "8px 12px",
-                borderRadius: 20,
-                boxShadow: "0 2px 5px rgba(16, 7, 7, 0.2)",
-                fontSize: 14,
-                fontWeight: "bold",
-              }}
-            >
-              {filteredResources.length} resources found
-            </div>
+              <div className={styles.countBadge}>
+                {filteredResources.length} resources found
+              </div>
+            </>
           )}
         </div>
 
-        {/* Right: Resources Panel */}
         <ResourcesPanel
           filteredResources={filteredResources}
           userLocation={userLocation}
           onDirections={handleGetDirections}
           onMoreInfo={handleMoreInfo}
+          isMobile={false}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
 
-        {/* Modal */}
         <DetailModal
           resource={selectedResource}
           onClose={() => setSelectedResource(null)}
@@ -378,36 +299,14 @@ function PittsburghFoodMap() {
     );
   }
 
-  // mobile layout
+  // Mobile layout
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100dvh",
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        background: "#f8f9fa",
-      }}
-    >
-      {/* Header */}
-      <div
-        style={{
-          background: "#FFB81C",
-          padding: "12px 20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h1 style={{ margin: 0, fontSize: 18, color: "black" }}>
-          PGH Food Map
-        </h1>
+    <div className={styles.mobileApp}>
+      <div className={styles.mobileHeader}>
+        <h1 className={styles.mobileHeaderTitle}>PGH Food Map</h1>
       </div>
 
-      {/* Main */}
-      <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+      <div className={styles.mobileMain}>
         {centerContent()}
 
         {activeView === "map" && (
@@ -418,21 +317,9 @@ function PittsburghFoodMap() {
                 onError: (msg) => alert(msg),
               })
             }
+            className={styles.mobileLocateButton}
             style={{
-              position: "fixed",
-              right: 16,
               bottom: `calc(${navH + 16}px + env(safe-area-inset-bottom))`,
-              zIndex: 1500,
-              background: "white",
-              border: "1px solid rgba(0,0,0,0.15)",
-              borderRadius: "50%",
-              width: 48,
-              height: 48,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
             }}
             aria-label="Find my location"
             title="Find my location"
@@ -442,163 +329,76 @@ function PittsburghFoodMap() {
         )}
       </div>
 
-      {/* Bottom nav */}
       <nav
         ref={navRef}
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          background: "white",
-          borderTop: "1px solid #dee2e6",
-          paddingTop: 8,
-          paddingBottom: `calc(12px + env(safe-area-inset-bottom))`,
-          boxShadow: "0 -2px 4px rgba(0,0,0,0.1)",
-          position: "sticky",
-          bottom: 0,
-          zIndex: 100,
-        }}
+        className={styles.bottomNav}
+        style={{ paddingBottom: `calc(12px + env(safe-area-inset-bottom))` }}
       >
         <button
           onClick={() => setActiveView("map")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            color: activeView === "map" ? "#FFB81C" : "#6c757d",
-            cursor: "pointer",
-          }}
+          className={`${styles.navButton} ${
+            activeView === "map"
+              ? styles.navButtonActive
+              : styles.navButtonInactive
+          }`}
           aria-label="Map"
         >
           <Map size={20} />
-          <span style={{ fontSize: 12 }}>Map</span>
+          <span className={styles.navButtonText}>Map</span>
         </button>
 
         <button
           onClick={() => setActiveView("list")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            color: activeView === "list" ? "#FFB81C" : "#6c757d",
-            cursor: "pointer",
-            position: "relative",
-          }}
+          className={`${styles.navButton} ${
+            activeView === "list"
+              ? styles.navButtonActive
+              : styles.navButtonInactive
+          }`}
           aria-label="List"
         >
           <List size={20} />
-          <span style={{ fontSize: 12 }}>List</span>
+          <span className={styles.navButtonText}>List</span>
           {filteredResources.length > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: 2,
-                right: 2,
-                background: "#dc3545",
-                color: "white",
-                borderRadius: 10,
-                padding: "2px 6px",
-                fontSize: 10,
-                fontWeight: "bold",
-              }}
-            >
-              {filteredResources.length}
-            </span>
+            <span className={styles.navBadge}>{filteredResources.length}</span>
           )}
         </button>
 
         <button
           onClick={() => setShowFilters(true)}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            color:
-              filters.resourceTypes.length > 0 ||
-              filters.neighborhood !== "All Neighborhoods"
-                ? "#FFB81C"
-                : "#6c757d",
-            cursor: "pointer",
-          }}
+          className={`${styles.navButton} ${
+            filters.resourceTypes.length > 0
+              ? styles.navButtonActive
+              : styles.navButtonInactive
+          }`}
           aria-label="Filter"
         >
           <Filter size={20} />
-          <span style={{ fontSize: 12 }}>Filter</span>
-        </button>
-
-        <button
-          onClick={() => setActiveView("search")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            color: activeView === "search" ? "#FFB81C" : "#6c757d",
-            cursor: "pointer",
-          }}
-          aria-label="Search"
-        >
-          <Search size={20} />
-          <span style={{ fontSize: 12 }}>Search</span>
+          <span className={styles.navButtonText}>Filter</span>
         </button>
 
         <button
           onClick={() => setActiveView("help")}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 4,
-            color: activeView === "help" ? "#FFB81C" : "#6c757d",
-            cursor: "pointer",
-          }}
+          className={`${styles.navButton} ${
+            activeView === "help"
+              ? styles.navButtonActive
+              : styles.navButtonInactive
+          }`}
           aria-label="Help"
         >
           <HelpCircle size={20} />
-          <span style={{ fontSize: 12 }}>Help</span>
+          <span className={styles.navButtonText}>Help</span>
         </button>
       </nav>
 
-      {/* Mobile filters modal */}
       {showFilters && (
-        <div
-          style={{
-            position: "fixed",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: "white",
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            maxHeight: "80vh",
-            zIndex: 1500,
-            boxShadow: "0 -4px 20px rgba(0,0,0,0.2)",
-            display: "flex", 
-            flexDirection: "column", 
-          }}
-        >
+        <div className={styles.filtersModal}>
           <FilterPanel
             filters={filters}
             setFilters={setFilters}
             onClose={() => setShowFilters(false)}
             isMobile
+            onHelp={handleShowHelp}
+            userLocation={userLocation}
           />
         </div>
       )}
@@ -611,4 +411,4 @@ function PittsburghFoodMap() {
   );
 }
 
-export default PittsburghFoodMap;
+export default App;

@@ -1,0 +1,209 @@
+/* App.module.css */
+
+/* Base app container */
+.app {
+  display: flex;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Desktop Layout - Left Sidebar */
+.leftSidebar {
+  width: 300px;
+  background: white;
+  border-right: 1px solid #dee2e6;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+  background: #FFB81C;
+}
+
+.headerTitle {
+  margin: 0;
+  font-size: 20px;
+  color: black;
+}
+
+.searchContainer {
+  padding: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+}
+
+.filterContainer {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Desktop Layout - Center Content */
+.centerContent {
+  flex: 1;
+  position: relative;
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 18px;
+  color: #6c757d;
+}
+
+/* Floating Locate Button */
+.locateButton {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.locateButton:hover {
+  background: #f8f9fa;
+}
+
+/* Count Badge */
+.countBadge {
+  position: absolute;
+  top: 10px;
+  left: 55px;
+  z-index: 1000;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(16, 7, 7, 0.2);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Mobile Layout */
+.mobileApp {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f8f9fa;
+}
+
+.mobileHeader {
+  background: #FFB81C;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mobileHeaderTitle {
+  margin: 0;
+  font-size: 18px;
+  color: black;
+}
+
+.mobileMain {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobileLocateButton {
+  position: fixed;
+  right: 16px;
+  z-index: 1500;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Bottom Navigation */
+.bottomNav {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  border-top: 1px solid #dee2e6;
+  padding-top: 8px;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.navButtonActive {
+  color: #FFB81C;
+}
+
+.navButtonInactive {
+  color: #6c757d;
+}
+
+.navButtonText {
+  font-size: 12px;
+}
+
+.navBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #dc3545;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+/* Mobile Filters Modal */
+.filtersModal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  max-height: 80vh;
+  z-index: 1500;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+}

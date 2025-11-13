@@ -3,15 +3,17 @@
 .root {
   background: var(--bg);
   padding: 20px;
-  padding-bottom: 0; /* reset */
+  padding-bottom: 0;
   height: 100%;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .root::after {
   content: "";
   display: block;
-  height: calc(96px + env(safe-area-inset-bottom, 16px));
+  height: calc(140px + env(safe-area-inset-bottom, 16px));
 }
 
 /* header */
@@ -21,10 +23,12 @@
   align-items: center;
   margin-bottom: 20px;
 }
+
 .title {
   margin: 0;
   font-size: 20px;
 }
+
 .close {
   background: none;
   border: none;
@@ -36,40 +40,48 @@
 .section {
   margin-bottom: 24px;
 }
+
 .sectionTitle {
   font-size: 16px;
   margin-bottom: 12px;
   color: var(--muted);
 }
+
 .controls {
   display: flex;
   gap: 8px;
 }
+
 .btn {
   composes: btn from "../styles/tokens.css";
   font-size: 12px;
   padding: 4px 8px;
 }
+
 .checkboxRow {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
   cursor: pointer;
 }
+
 .checkbox {
   margin-right: 10px;
   width: 18px;
   height: 18px;
 }
+
 .icon {
   margin-right: 8px;
   font-size: 18px;
 }
+
 .only {
   composes: btn from "../styles/tokens.css";
   margin-left: auto;
   font-size: 12px;
 }
+
 .select {
   width: 100%;
   padding: 10px;
@@ -78,6 +90,12 @@
   border-radius: 6px;
   background: var(--bg);
 }
+
+.rangeInput {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
 .rangeMeta {
   display: flex;
   justify-content: space-between;
@@ -85,17 +103,20 @@
   color: var(--muted-2);
 }
 
+/* Main footer with Apply/Reset */
 .footer {
   position: sticky;
-  bottom: 0;
+  bottom: 60px;
   left: 0;
   right: 0;
   display: flex;
   gap: 10px;
-  padding: 12px 0 calc(16px + env(safe-area-inset-bottom, 16px));
+  padding: 12px 20px 12px 20px;
   background: var(--bg);
   border-top: 1px solid var(--line-2);
-  z-index: 1; 
+  z-index: 2;
+  margin-left: -20px;
+  margin-right: -20px;
 }
 
 .apply {
@@ -112,4 +133,42 @@
   font-weight: 700;
   background: var(--surface);
   color: var(--muted);
+}
+
+/* Separate Help footer at very bottom */
+.helpFooter {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 20px calc(16px + env(safe-area-inset-bottom, 16px)) 20px;
+  background: var(--bg);
+  z-index: 1;
+  margin-left: -20px;
+  margin-right: -20px;
+}
+
+.help {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #4a5568;
+  color: #ffffff;
+  border: 1px dashed #718096;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.help:hover {
+  background: #5a6678;
+  border-style: solid;
+}
+.distanceNote {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
 }
