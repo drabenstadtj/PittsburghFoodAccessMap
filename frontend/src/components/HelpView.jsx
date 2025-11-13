@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./HelpView.module.css";
+import SuggestionModal from "./SuggestionModal";
 
 export default function HelpView({ onClose, isMobile }) {
   const [showReportModal, setShowReportModal] = useState(false);
@@ -9,6 +10,7 @@ export default function HelpView({ onClose, isMobile }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [showSuggestionModal, setShowSuggestionModal] = useState(false);
 
   const handleReportSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +81,17 @@ export default function HelpView({ onClose, isMobile }) {
         </div>
 
         <div className={styles.section}>
-          <h3 className={styles.h3}>Report an Issue</h3>
+          <h3 className={styles.h3}>Missing a resource?</h3>
+          <button
+            onClick={() => setShowSuggestionModal(true)}
+            className={styles.report}
+          >
+            Suggest a New Location
+          </button>
+        </div>
+
+        <div className={styles.section}>
+          <h3 className={styles.h3}>Found an issue?</h3>
           <button
             onClick={() => setShowReportModal(true)}
             className={styles.report}
@@ -87,6 +99,7 @@ export default function HelpView({ onClose, isMobile }) {
             Report Missing or Incorrect Information
           </button>
         </div>
+
         <div className={styles.about}>
           <h3 className={styles.h3}>About</h3>
           <p className={styles.aboutText}>
@@ -95,6 +108,10 @@ export default function HelpView({ onClose, isMobile }) {
           </p>
         </div>
       </div>
+
+      {showSuggestionModal && (
+        <SuggestionModal onClose={() => setShowSuggestionModal(false)} />
+      )}
 
       {showReportModal && (
         <div className={styles.backdrop}>

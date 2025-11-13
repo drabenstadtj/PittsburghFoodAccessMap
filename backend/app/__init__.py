@@ -7,6 +7,7 @@ from app.routes.food_resource_routes import food_resource_bp
 from app.routes.reporting_routes import reporting_bp
 from app.models.report import Report  
 from app.models.food_resource import FoodResource
+from app.routes.suggestion_routes import suggestion_bp
 
 def create_app(config_name="default"):
     app = Flask(__name__)
@@ -30,6 +31,7 @@ def create_app(config_name="default"):
     app.register_blueprint(user_bp)
     app.register_blueprint(food_resource_bp)
     app.register_blueprint(reporting_bp)
+    app.register_blueprint(suggestion_bp)
     
     # Health check endpoint
     @app.route("/api/health")
