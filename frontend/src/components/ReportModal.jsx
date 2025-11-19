@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createReport } from "../services/api";
 import styles from "./ReportModal.module.css";
 
 export default function ReportModal({ resource, onClose }) {
@@ -15,25 +16,14 @@ export default function ReportModal({ resource, onClose }) {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/reports", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          resource_id: resource.properties.id,
-          message: message.trim(),
-        }),
+      await createReport({
+        resource_id: resource.properties.id,
+        message: message.trim(),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit report");
-      }
 
       setSuccess(true);
       setMessage("");
       
-      // Auto-close after 2 seconds
       setTimeout(() => {
         onClose();
       }, 5000);
@@ -56,7 +46,6 @@ export default function ReportModal({ resource, onClose }) {
         <div className={styles.body}>
           {success ? (
             <div className={styles.successContainer}>
-              {/* <div className={styles.successIcon}>✓</div> */}
               <h3 className={styles.successTitle}>Report Submitted!</h3>
               <p className={styles.successMessage}>
                 Thank you for helping improve our data.

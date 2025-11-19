@@ -16,7 +16,6 @@
   height: calc(140px + env(safe-area-inset-bottom, 16px));
 }
 
-/* header */
 .bar {
   display: flex;
   justify-content: space-between;
@@ -103,7 +102,6 @@
   color: var(--muted-2);
 }
 
-/* Main footer with Apply/Reset */
 .footer {
   position: sticky;
   bottom: 60px;
@@ -135,7 +133,6 @@
   color: var(--muted);
 }
 
-/* Separate Help footer at very bottom */
 .helpFooter {
   position: sticky;
   bottom: 0;

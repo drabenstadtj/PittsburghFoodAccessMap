@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./HelpView.module.css";
 import SuggestionModal from "./SuggestionModal";
+import { createReport } from "../services/api";
 
 export default function HelpView({ onClose, isMobile }) {
   const [showReportModal, setShowReportModal] = useState(false);
@@ -18,25 +19,14 @@ export default function HelpView({ onClose, isMobile }) {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/reports", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          resource_id: null,
-          message: reportMessage.trim(),
-        }),
+      await createReport({
+        resource_id: null,
+        message: reportMessage.trim(),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit report");
-      }
 
       setSuccess(true);
       setReportMessage("");
 
-      // Auto-close after 5 seconds
       setTimeout(() => {
         setShowReportModal(false);
         setSuccess(false);

@@ -6,14 +6,13 @@ import { createCustomIcon } from "../utils/mapUtils";
 import { metaForType } from "../constants/resourceIcons";
 import styles from "./MapView.module.css";
 
-// New component to handle zooming to user location
 function ZoomToLocation({ userLocation }) {
   const map = useMap();
   
   useEffect(() => {
     if (userLocation) {
       map.flyTo(userLocation, 15, {
-        duration: 1.5 // smooth animation
+        duration: 1.5 
       });
     }
   }, [userLocation, map]);

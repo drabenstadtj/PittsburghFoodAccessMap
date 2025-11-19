@@ -45,7 +45,6 @@ export default function Resources() {
         credentials: "include",
       });
       const data = await response.json();
-      // Backend returns GeoJSON FeatureCollection
       setResources(data.features || []);
     } catch (error) {
       console.error("Error fetching resources:", error);

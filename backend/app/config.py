@@ -16,27 +16,35 @@ class Config:
     # Database
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # CORS
-    CORS_ORIGINS = ["http://localhost:3000"]
+    # CORS - Default to localhost for development
+    CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "http://localhost:3000").split(",")
     CORS_SUPPORTS_CREDENTIALS = True  # Required for session cookies with CORS
 
 class DevelopmentConfig(Config):
     DEBUG = True
     
-    # FIX: Use absolute path for database location
-    # This ensures the database goes to app/database/dev.db
+    # Use absolute path for database location
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'database', 'dev.db')}"
     
     SESSION_COOKIE_SECURE = False  # HTTP is fine for development
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///prod.db")
+    
+    # Use absolute path for production database too
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL", 
+        f"sqlite:///{os.path.join(BASE_DIR, 'database', 'prod.db')}"
+    )
+    
     SESSION_COOKIE_SECURE = True  # Require HTTPS in production
     
-    # IMPORTANT: Set a strong SECRET_KEY environment variable in production!
-    # Generate one with: python -c "import secrets; print(secrets.token_hex(32))"
-    SECRET_KEY = os.environ.get("SECRET_KEY", Config.SECRET_KEY)
+    # Ensure SECRET_KEY is set in production
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    
+    # Production should ALWAYS have CORS_ORIGINS set via environment
+    if not os.environ.get("CORS_ORIGINS"):
+        raise ValueError("CORS_ORIGINS must be set in production!")
 
 config = {
     "development": DevelopmentConfig,

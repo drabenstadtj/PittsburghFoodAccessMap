@@ -16,7 +16,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public route - your existing app */}
+          {/* Public routes*/}
           <Route path="/" element={<MainApp />} />
           
           {/* Admin login */}
