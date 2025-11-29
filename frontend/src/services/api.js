@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+// Use empty string for same-origin requests (proxied by Nginx)
+// Or set REACT_APP_API_URL for external API
+const API_BASE_URL = process.env.REACT_APP_API_URL || "";
 
 // Helper function for all API calls
 async function apiFetch(endpoint, options = {}) {

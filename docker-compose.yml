@@ -24,8 +24,8 @@ services:
       dockerfile: Dockerfile
     container_name: food-map-frontend
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"      # HTTP: Access via http://localhost:8080
+      - "8443:443"     # HTTPS: Access via https://localhost:8443
     depends_on:
       - backend
     networks:
