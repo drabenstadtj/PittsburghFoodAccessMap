@@ -414,3 +414,5 @@ sketch
 *.db
 
 
+setup-production.sh
+DOCKER_SETUP.md
