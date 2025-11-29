@@ -1,37 +1,43 @@
-version: '3.8'
-
 services:
   backend:
     build: ./backend
     container_name: food-map-backend
     env_file:
       - ./backend/.env
+    ports:
+      - 5007:5000
     volumes:
       - ./backend/database:/app/database
     networks:
       - food-map-network
+      - reverse-proxy-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/auth/check"]
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:5000/api/auth/check
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: food-map-frontend
     ports:
-      - "8080:80"      # HTTP: Access via http://localhost:8080
-      - "8443:443"     # HTTPS: Access via https://localhost:8443
+      - 8089:80
+      - 8443:443
     depends_on:
       - backend
     networks:
       - food-map-network
+      - reverse-proxy-network
     restart: unless-stopped
-
 networks:
   food-map-network:
     driver: bridge
+  reverse-proxy-network:
+    external: true

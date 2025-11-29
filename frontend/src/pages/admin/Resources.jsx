@@ -10,6 +10,12 @@ import {
 import styles from "./Resources.module.css";
 import HoursEditor from "./HoursEditor";
 import HoursDisplay from "./HoursDisplay";
+import {
+  fetchResources as apiFetchResources,
+  createResource,
+  updateResource,
+  deleteResource,
+} from "../../services/api";
 
 export default function Resources() {
   const [resources, setResources] = useState([]);
@@ -34,19 +40,16 @@ export default function Resources() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    fetchResources();
+    loadResources();
   }, []);
 
   useEffect(() => {
     filterResources();
   }, [resources, searchQuery, typeFilter]);
 
-  const fetchResources = async () => {
+  const loadResources = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/food-resources", {
-        credentials: "include",
-      });
-      const data = await response.json();
+      const data = await apiFetchResources();
       setResources(data.features || []);
     } catch (error) {
       console.error("Error fetching resources:", error);
@@ -98,8 +101,8 @@ export default function Resources() {
       website: "",
       hours: "",
       description: "",
-      latitude: "", // ADD THIS
-      longitude: "", // ADD THIS
+      latitude: "",
+      longitude: "",
     });
     setShowModal(true);
   };
@@ -126,33 +129,23 @@ export default function Resources() {
     setActionLoading(true);
 
     try {
-      const url = editingResource
-        ? `http://localhost:5000/api/food-resources/${editingResource.properties.id}`
-        : "http://localhost:5000/api/food-resources";
+      const payload = {
+        ...formData,
+        latitude: parseFloat(formData.latitude),
+        longitude: parseFloat(formData.longitude),
+      };
 
-      const method = editingResource ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          ...formData,
-          latitude: parseFloat(formData.latitude),
-          longitude: parseFloat(formData.longitude),
-        }),
-      });
-
-      if (response.ok) {
-        fetchResources();
-        setShowModal(false);
+      if (editingResource) {
+        await updateResource(editingResource.properties.id, payload);
       } else {
-        const error = await response.json();
-        alert(error.error || "Failed to save resource");
+        await createResource(payload);
       }
+
+      loadResources();
+      setShowModal(false);
     } catch (error) {
       console.error("Error saving resource:", error);
-      alert("Failed to save resource");
+      alert(error.message || "Failed to save resource");
     } finally {
       setActionLoading(false);
     }
@@ -163,23 +156,11 @@ export default function Resources() {
       return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/food-resources/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        fetchResources();
-      } else {
-        const error = await response.json();
-        alert(error.error || "Failed to delete resource");
-      }
+      await deleteResource(id);
+      loadResources();
     } catch (error) {
       console.error("Error deleting resource:", error);
-      alert("Failed to delete resource");
+      alert(error.message || "Failed to delete resource");
     }
   };
 
@@ -419,7 +400,6 @@ export default function Resources() {
                   />
                 </div>
 
-                {/* ADD LATITUDE/LONGITUDE HERE - BEFORE PHONE/WEBSITE */}
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
                     <label className={styles.label}>
@@ -503,7 +483,6 @@ export default function Resources() {
                 </div>
               </div>
 
-              {/* MODAL FOOTER STAYS AT THE END */}
               <div className={styles.modalFooter}>
                 <button
                   type="button"

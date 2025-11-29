@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Search, Filter, Eye, Check, X, Trash2, MapPin } from "lucide-react";
 import styles from "./Suggestions.module.css";
+import {
+  fetchSuggestions as apiFetchSuggestions,
+  updateSuggestionStatus,
+  deleteSuggestion,
+} from "../../services/api";
 
 export default function Suggestions() {
   const [suggestions, setSuggestions] = useState([]);
@@ -14,19 +19,16 @@ export default function Suggestions() {
   const [adminNotes, setAdminNotes] = useState("");
 
   useEffect(() => {
-    fetchSuggestions();
+    loadSuggestions();
   }, []);
 
   useEffect(() => {
     filterSuggestions();
   }, [suggestions, searchQuery, statusFilter]);
 
-  const fetchSuggestions = async () => {
+  const loadSuggestions = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/suggestions", {
-        credentials: "include",
-      });
-      const data = await response.json();
+      const data = await apiFetchSuggestions();
       setSuggestions(data.suggestions || []);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -58,25 +60,14 @@ export default function Suggestions() {
   const handleUpdateStatus = async (id, status, notes = "") => {
     setActionLoading(true);
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/suggestions/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ status, admin_notes: notes || adminNotes }),
-        }
-      );
-
-      if (response.ok) {
-        fetchSuggestions();
-        setShowModal(false);
-        setSelectedSuggestion(null);
-        setAdminNotes("");
-      }
+      await updateSuggestionStatus(id, status);
+      loadSuggestions();
+      setShowModal(false);
+      setSelectedSuggestion(null);
+      setAdminNotes("");
     } catch (error) {
       console.error("Error updating suggestion:", error);
-      alert("Failed to update suggestion");
+      alert(error.message || "Failed to update suggestion");
     } finally {
       setActionLoading(false);
     }
@@ -87,20 +78,11 @@ export default function Suggestions() {
       return;
 
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/suggestions/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
-
-      if (response.ok) {
-        fetchSuggestions();
-      }
+      await deleteSuggestion(id);
+      loadSuggestions();
     } catch (error) {
       console.error("Error deleting suggestion:", error);
-      alert("Failed to delete suggestion");
+      alert(error.message || "Failed to delete suggestion");
     }
   };
 

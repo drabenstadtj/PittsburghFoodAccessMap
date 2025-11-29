@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Search, Filter, Eye, Check, X, Trash2 } from 'lucide-react';
 import styles from './Reports.module.css';
 
+import {
+  fetchReports as apiFetchReports,
+  updateReportStatus,
+  deleteReport as apiDeleteReport,
+} from '../../api'; // adjust path as needed
+
 export default function Reports() {
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
@@ -13,19 +19,16 @@ export default function Reports() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    fetchReports();
+    loadReports();
   }, []);
 
   useEffect(() => {
     filterReports();
   }, [reports, searchQuery, statusFilter]);
 
-  const fetchReports = async () => {
+  const loadReports = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/reports', {
-        credentials: 'include',
-      });
-      const data = await response.json();
+      const data = await apiFetchReports();
       setReports(data.reports || []);
     } catch (error) {
       console.error('Error fetching reports:', error);
@@ -38,14 +41,15 @@ export default function Reports() {
     let filtered = [...reports];
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(r => r.status === statusFilter);
+      filtered = filtered.filter((r) => r.status === statusFilter);
     }
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(r =>
-        r.message.toLowerCase().includes(q) ||
-        r.resource_name?.toLowerCase().includes(q)
+      filtered = filtered.filter(
+        (r) =>
+          r.message.toLowerCase().includes(q) ||
+          r.resource_name?.toLowerCase().includes(q)
       );
     }
 
@@ -55,18 +59,10 @@ export default function Reports() {
   const handleUpdateStatus = async (id, status, adminNotes = '') => {
     setActionLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/reports/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ status, admin_notes: adminNotes }),
-      });
-
-      if (response.ok) {
-        fetchReports();
-        setShowModal(false);
-        setSelectedReport(null);
-      }
+      await updateReportStatus(id, status, adminNotes);
+      await loadReports();
+      setShowModal(false);
+      setSelectedReport(null);
     } catch (error) {
       console.error('Error updating report:', error);
       alert('Failed to update report');
@@ -79,14 +75,8 @@ export default function Reports() {
     if (!window.confirm('Are you sure you want to delete this report?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/reports/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        fetchReports();
-      }
+      await apiDeleteReport(id);
+      await loadReports();
     } catch (error) {
       console.error('Error deleting report:', error);
       alert('Failed to delete report');
@@ -100,10 +90,14 @@ export default function Reports() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return '#FFC107';
-      case 'reviewed': return '#2196F3';
-      case 'resolved': return '#4CAF50';
-      default: return '#9E9E9E';
+      case 'pending':
+        return '#FFC107';
+      case 'reviewed':
+        return '#2196F3';
+      case 'resolved':
+        return '#4CAF50';
+      default:
+        return '#9E9E9E';
     }
   };
 
@@ -155,7 +149,7 @@ export default function Reports() {
         <div className={styles.statItem}>
           <span className={styles.statLabel}>Pending:</span>
           <span className={styles.statValue}>
-            {reports.filter(r => r.status === 'pending').length}
+            {reports.filter((r) => r.status === 'pending').length}
           </span>
         </div>
         <div className={styles.statItem}>
@@ -246,8 +240,14 @@ export default function Reports() {
       )}
 
       {showModal && selectedReport && (
-        <div className={styles.modalBackdrop} onClick={() => setShowModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalBackdrop}
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className={styles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalHeader}>
               <h2>Report Details</h2>
               <button

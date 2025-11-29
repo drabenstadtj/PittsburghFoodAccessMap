@@ -6,6 +6,13 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
+import {
+  fetchReportStats,
+  fetchSuggestionStats,
+  fetchResources,
+  fetchReports,
+  fetchSuggestions,
+} from "../../services/api";
 import { Link } from "react-router-dom";
 import styles from "./Dashboard.module.css";
 
@@ -32,21 +39,11 @@ export default function Dashboard() {
         reportsData,
         suggestionsData,
       ] = await Promise.all([
-        fetch("http://localhost:5000/api/reports/stats", {
-          credentials: "include",
-        }).then((r) => r.json()),
-        fetch("http://localhost:5000/api/suggestions/stats", {
-          credentials: "include",
-        }).then((r) => r.json()),
-        fetch("http://localhost:5000/api/food-resources", {
-          credentials: "include",
-        }).then((r) => r.json()),
-        fetch("http://localhost:5000/api/reports?status=pending", {
-          credentials: "include",
-        }).then((r) => r.json()),
-        fetch("http://localhost:5000/api/suggestions?status=pending", {
-          credentials: "include",
-        }).then((r) => r.json()),
+        fetchReportStats(),
+        fetchSuggestionStats(),
+        fetchResources(),
+        fetchReports("?status=pending"),
+        fetchSuggestions("?status=pending"),
       ]);
 
       setStats({
