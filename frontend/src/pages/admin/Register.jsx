@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
 // import your API helper
-import { register as registerUser } from "../../api"; // adjust path as needed
+import { register as registerUser } from "../../services/api"; // adjust path as needed
 
 export default function Register() {
   const [formData, setFormData] = useState({

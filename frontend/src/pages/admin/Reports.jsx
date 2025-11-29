@@ -6,7 +6,7 @@ import {
   fetchReports as apiFetchReports,
   updateReportStatus,
   deleteReport as apiDeleteReport,
-} from '../../api'; // adjust path as needed
+} from '../../services/api'; // adjust path as needed
 
 export default function Reports() {
   const [reports, setReports] = useState([]);
