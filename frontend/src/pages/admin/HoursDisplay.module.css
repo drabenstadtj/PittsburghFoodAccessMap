@@ -1,0 +1,81 @@
+@import "../../styles/tokens.css";
+
+/* Simple string display */
+.simple {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.notSet {
+  font-size: 14px;
+  color: var(--muted-2);
+  font-style: italic;
+}
+
+/* Compact view for cards */
+.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.compactRow {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.compactDays {
+  font-weight: 600;
+  color: var(--muted);
+  min-width: 60px;
+}
+
+.compactHours {
+  color: var(--muted);
+}
+
+/* Full view for modals */
+.full {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.hoursGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hourRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.days {
+  font-weight: 600;
+  color: var(--text);
+  min-width: 80px;
+}
+
+.hours {
+  color: var(--muted);
+  text-align: right;
+}

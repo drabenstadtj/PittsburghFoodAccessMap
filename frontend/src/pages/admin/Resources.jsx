@@ -8,6 +8,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import styles from "./Resources.module.css";
+import HoursEditor from "./HoursEditor";
+import HoursDisplay from "./HoursDisplay";
 
 export default function Resources() {
   const [resources, setResources] = useState([]);
@@ -312,9 +314,7 @@ export default function Resources() {
                   <div className={styles.cardRow}>
                     <span className={styles.label}>Hours:</span>
                     <span className={styles.hours}>
-                      {typeof resource.properties.hours === "object"
-                        ? JSON.stringify(resource.properties.hours)
-                        : resource.properties.hours}
+                      <HoursDisplay hours={resource.properties.hours} compact />
                     </span>
                   </div>
                 )}
@@ -484,13 +484,9 @@ export default function Resources() {
 
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Hours</label>
-                  <textarea
-                    name="hours"
+                  <HoursEditor
                     value={formData.hours}
                     onChange={handleInputChange}
-                    className={styles.textarea}
-                    placeholder="e.g., Mon-Fri: 9:00-17:00"
-                    rows={2}
                   />
                 </div>
 

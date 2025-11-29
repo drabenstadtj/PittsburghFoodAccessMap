@@ -4,13 +4,22 @@
   composes: card from "../styles/tokens.css";
   padding: 12px;
   margin-bottom: 12px;
+  transition: all 0.2s ease;
 }
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand);
+}
+
 .header {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
 }
+
 .icon {
   display: inline-flex;
   align-items: center;
@@ -21,6 +30,7 @@
   color: #fff;
   font-size: 16px;
 }
+
 .title {
   margin: 0;
   font-size: 16px;
@@ -28,6 +38,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text);
+  font-weight: 600;
 }
 
 .pill {
@@ -35,33 +47,67 @@
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 12px;
-  background: #f1f3f5;
-  color: var(--muted);
+  background: var(--surface);
+  color: var(--text);
   margin-left: 6px;
+  font-weight: 500;
 }
+
 .body {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--text-light);
 }
+
 .meta {
   margin: 4px 0;
 }
+
 .open {
-  color: #2f9e44;
+  color: var(--success);
+  font-weight: 600;
 }
+
 .closed {
-  color: #d63939;
+  color: var(--danger);
+  font-weight: 600;
 }
+
 .buttons {
   display: flex;
   gap: 8px;
   margin-top: 10px;
+  align-items: center;
 }
+
 .btn {
   composes: btn from "../styles/tokens.css";
   flex: 1;
 }
+
 .primary {
   composes: btnPrimary from "../styles/tokens.css";
   flex: 1;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--brand);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.iconBtn:hover {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+  transform: translateY(-1px);
 }

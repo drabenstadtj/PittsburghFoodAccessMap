@@ -1,8 +1,16 @@
-# Backend Production Configuration Guide
+# Backend API Documentation
 
 ## Overview
 
-This backend uses Flask with environment-based configuration. The application can run in development or production mode using Docker containers with Gunicorn as the WSGI server.
+Flask-based REST API for the Pittsburgh Food Access Map application. Provides endpoints for managing food resources, user authentication, issue reporting, and location suggestions.
+
+**Tech Stack:**
+- Flask 3.1.2
+- SQLAlchemy 2.0.44 (ORM)
+- Flask-Migrate 4.1.0 (Database migrations)
+- Flask-CORS 6.0.1 (Cross-origin requests)
+- Werkzeug 3.1.3 (Password hashing)
+- Gunicorn (Production WSGI server)
 
 ## File Structure
 
@@ -249,7 +257,3 @@ Before deploying to production:
 - Configure monitoring and logging
 - Review security headers
 - Test session management and authentication
-
-## Support
-
-For issues or questions, refer to the Flask documentation at https://flask.palletsprojects.com/

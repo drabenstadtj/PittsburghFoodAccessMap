@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { RESOURCE_ICONS } from "../constants/resourceIcons";
+// import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./HelpView.module.css";
 import SuggestionModal from "./SuggestionModal";
 import { createReport } from "../services/api";

@@ -26,7 +26,11 @@ export default function AdminLayout() {
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.logo}>
-          <h1>Admin Panel</h1>
+          <img 
+            src="/PPI_Logo_white.svg" 
+            alt="Admin Panel" 
+            className={styles.logoImage}
+          />
           <p>{user?.name}</p>
         </div>
         

@@ -3,7 +3,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(40, 44, 58, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,6 +19,7 @@
   max-height: 80vh;
   overflow-y: auto;
   padding: 24px;
+  border: 1px solid var(--line);
 }
 
 .header {
@@ -31,6 +32,8 @@
 .title {
   margin: 0;
   font-size: 24px;
+  color: var(--dark);
+  font-weight: 700;
 }
 
 .close {
@@ -44,11 +47,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: var(--dark);
 }
 
 .body {
   font-size: 15px;
   line-height: 1.6;
+  color: var(--text);
 }
 
 /* Success state */
@@ -60,16 +70,17 @@
 .successIcon {
   font-size: 48px;
   margin-bottom: 16px;
-  color: #4CAF50;
+  color: var(--success);
 }
 
 .successTitle {
   margin: 0 0 8px 0;
-  color: #4CAF50;
+  color: var(--success);
+  font-weight: 700;
 }
 
 .successMessage {
-  color: #666;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -89,24 +100,31 @@
   min-height: 100px;
   padding: 10px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--line-2);
   resize: vertical;
   font-family: inherit;
   font-size: 15px;
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--brand);
 }
 
 .textarea:disabled {
-  background: #f5f5f5;
+  background: var(--surface);
   cursor: not-allowed;
 }
 
 .submitButton {
   margin-top: 16px;
   padding: 10px 20px;
-  background: #FFB81C;
+  background: var(--brand);
   border: none;
   border-radius: 8px;
-  color: black;
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
   width: 100%;
@@ -114,10 +132,10 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #e6a519;
+  background: var(--brand-hover);
 }
 
 .submitButton:disabled {
-  background: #ccc;
+  background: var(--line);
   cursor: not-allowed;
 }
