@@ -14,9 +14,10 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const data = await getCurrentUser();
-      
-      if (data.authenticated) {
-        setUser(data.user);
+
+      // /api/auth/me returns the user object directly, not wrapped in {authenticated, user}
+      if (data && data.email) {
+        setUser(data);
       } else {
         setUser(null);
       }

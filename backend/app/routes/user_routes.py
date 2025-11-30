@@ -80,11 +80,24 @@ def login():
     session['user_id'] = user.id
     session['is_admin'] = user.is_admin
     session['email'] = user.email
-    
-    return jsonify({
+
+    response = jsonify({
         "message": "Login successful",
         "user": user.to_dict(include_email=True)
     })
+
+    # Explicitly set cookie to be permanent with max-age
+    # This helps Firefox understand the cookie should persist
+    response.set_cookie(
+        'session_set',
+        'true',
+        max_age=60*60*24,  # 24 hours
+        httponly=False,
+        samesite=None,
+        secure=False
+    )
+
+    return response
 
 @user_bp.route("/api/auth/logout", methods=["POST"])
 def logout():

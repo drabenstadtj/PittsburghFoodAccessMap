@@ -11,9 +11,11 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev_secret_key_change_in_production")
     
     # Session configuration
+    SESSION_PERMANENT = True  # Sessions persist across browser restarts
     SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
     SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript access to session cookie
-    SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+    SESSION_COOKIE_SAMESITE = None  # None for better cross-origin compatibility in development
+    SESSION_REFRESH_EACH_REQUEST = True  # Refresh session on each request
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)  # Session expires after 24 hours
     
     # Database
@@ -25,11 +27,13 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    
+
     # Use absolute path for database location
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'database', 'dev.db')}"
-    
+
     SESSION_COOKIE_SECURE = False  # HTTP is fine for development
+    SESSION_COOKIE_DOMAIN = None  # Don't set domain for localhost
+    SESSION_COOKIE_PATH = '/'  # Cookie valid for all paths
 
 class ProductionConfig(Config):
     DEBUG = False
