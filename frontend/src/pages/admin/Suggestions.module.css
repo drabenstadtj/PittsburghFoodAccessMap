@@ -475,3 +475,92 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .searchBox {
+    min-width: 100%;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .filterGroup {
+    width: 100%;
+  }
+
+  .stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 900px;
+  }
+
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .submitterSection p {
+    gap: 8px;
+  }
+
+  .linkBtn {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+
+  .modalFooter {
+    flex-direction: column-reverse;
+  }
+
+  .btnSuccess,
+  .btnDanger,
+  .btnSecondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .modalHeader h2 {
+    font-size: 20px;
+  }
+
+  .modalBody,
+  .modalFooter {
+    padding: 16px;
+  }
+
+  .table th,
+  .table td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+
+  .detailItem strong,
+  .detailSection strong,
+  .submitterSection strong,
+  .notesSection label strong {
+    font-size: 13px;
+  }
+
+  .detailSection p {
+    padding: 10px;
+    font-size: 13px;
+  }
+}

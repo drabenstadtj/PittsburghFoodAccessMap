@@ -11,18 +11,20 @@ async function apiFetch(endpoint, options = {}) {
     },
     ...options,
   });
-
   if (!res.ok) {
     const error = await res.json().catch(() => ({ error: "Request failed" }));
     throw new Error(error.error || `HTTP ${res.status}`);
   }
-
   return res.json();
 }
 
 // API functions
 export async function fetchResources() {
   return apiFetch("/api/food-resources");
+}
+
+export async function fetchResourceTypes() {
+  return apiFetch("/api/food-resources/types");
 }
 
 export async function createResource(data) {
@@ -90,6 +92,7 @@ export async function updateReportStatus(id, status, adminNotes = "") {
 export async function fetchSuggestions(query = "") {
   return apiFetch(`/api/suggestions${query}`);
 }
+
 export async function createSuggestion(data) {
   return apiFetch("/api/suggestions", {
     method: "POST",

@@ -12,6 +12,7 @@ import HoursEditor from "./HoursEditor";
 import HoursDisplay from "./HoursDisplay";
 import {
   fetchResources as apiFetchResources,
+  fetchResourceTypes,
   createResource,
   updateResource,
   deleteResource,
@@ -25,6 +26,8 @@ export default function Resources() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const [editingResource, setEditingResource] = useState(null);
+  const [availableTypes, setAvailableTypes] = useState([]);
+  const [geocoding, setGeocoding] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -41,6 +44,7 @@ export default function Resources() {
 
   useEffect(() => {
     loadResources();
+    loadResourceTypes();
   }, []);
 
   useEffect(() => {
@@ -55,6 +59,71 @@ export default function Resources() {
       console.error("Error fetching resources:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadResourceTypes = async () => {
+    try {
+      const data = await fetchResourceTypes();
+      setAvailableTypes(data.types || []);
+    } catch (error) {
+      console.error("Error fetching resource types:", error);
+    }
+  };
+
+  const geocodeAddress = async (address) => {
+    if (!address || address.trim() === "") {
+      return null;
+    }
+
+    setGeocoding(true);
+    try {
+      // Using Nominatim (OpenStreetMap) - free, no API key required
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          address
+        )}&limit=1`,
+        {
+          headers: {
+            "User-Agent": "FoodAccessApp/1.0", // Nominatim requires a user agent
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        return {
+          latitude: parseFloat(data[0].lat),
+          longitude: parseFloat(data[0].lon),
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      return null;
+    } finally {
+      setGeocoding(false);
+    }
+  };
+
+  const handleGeocodeAddress = async () => {
+    if (!formData.address) {
+      alert("Please enter an address first");
+      return;
+    }
+
+    const coords = await geocodeAddress(formData.address);
+
+    if (coords) {
+      setFormData((prev) => ({
+        ...prev,
+        latitude: coords.latitude.toString(),
+        longitude: coords.longitude.toString(),
+      }));
+    } else {
+      alert("Could not find coordinates for this address. Please enter them manually.");
     }
   };
 
@@ -363,15 +432,20 @@ export default function Resources() {
                     <label className={styles.label}>
                       Resource Type <span className={styles.required}>*</span>
                     </label>
-                    <input
-                      type="text"
+                    <select
                       name="resource_type"
                       value={formData.resource_type}
                       onChange={handleInputChange}
                       className={styles.input}
-                      placeholder="e.g., Food Bank, Pantry"
                       required
-                    />
+                    >
+                      <option value="">Select a type...</option>
+                      {availableTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.label}>Neighborhood</label>
@@ -390,14 +464,24 @@ export default function Resources() {
                   <label className={styles.label}>
                     Address <span className={styles.required}>*</span>
                   </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    className={styles.input}
-                    required
-                  />
+                  <div className={styles.addressWrapper}>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className={`${styles.input} ${styles.addressInput}`}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={handleGeocodeAddress}
+                      className={styles.geocodeBtn}
+                      disabled={geocoding || !formData.address}
+                    >
+                      {geocoding ? "Finding..." : "Get Coordinates"}
+                    </button>
+                  </div>
                 </div>
 
                 <div className={styles.formRow}>

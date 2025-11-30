@@ -283,3 +283,118 @@
   color: var(--brand);
   font-weight: 600;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .quickActions {
+    flex-direction: column;
+  }
+
+  .quickBtn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .dayRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .dayLabel {
+    min-width: auto;
+    font-size: 15px;
+  }
+
+  .hoursDisplay {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .hoursText {
+    text-align: center;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .dayActions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .iconBtn,
+  .textBtn {
+    flex: 1;
+    min-width: 80px;
+    justify-content: center;
+  }
+
+  .timeInputRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeInputGroup {
+    width: 100%;
+  }
+
+  .timeLabel {
+    min-width: 50px;
+  }
+
+  .editActions {
+    flex-direction: column;
+  }
+
+  .saveBtn,
+  .cancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor {
+    padding: 12px;
+  }
+
+  .dayRow {
+    padding: 10px;
+  }
+
+  .dayLabel {
+    font-size: 14px;
+  }
+
+  .formatHelper {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .quickBtn {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .textBtn,
+  .iconBtn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .timeInput {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .currentValue {
+    padding: 8px 10px;
+  }
+
+  .helperText {
+    font-size: 12px;
+  }
+}
