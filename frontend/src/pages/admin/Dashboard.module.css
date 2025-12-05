@@ -181,3 +181,86 @@
   color: #a0aec0;
   font-size: 14px;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .statCard {
+    padding: 20px;
+  }
+
+  .statIcon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .statNumber {
+    font-size: 28px;
+  }
+
+  .recentSection {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .recentCard {
+    padding: 20px;
+  }
+
+  .recentItemText {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .statCard {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .statIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .statIcon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .statContent h3 {
+    font-size: 12px;
+  }
+
+  .statNumber {
+    font-size: 24px;
+  }
+
+  .statDetail {
+    font-size: 12px;
+  }
+
+  .recentCard {
+    padding: 16px;
+  }
+
+  .recentHeader h2 {
+    font-size: 18px;
+  }
+
+  .recentItem {
+    padding: 10px;
+  }
+}

@@ -1,142 +1,144 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { PRIMARY_META, PRIMARY_ORDER } from "../constants/categoryMap";
-import styles from "./FilterPanel.module.css";
+import React from 'react';
+import { X } from 'lucide-react';
+import { RESOURCE_ICONS } from '../constants/resourceIcons';
+import styles from './FilterPanel.module.css';
 
-export default function FilterPanel({
-  filters,
-  setFilters,
-  onClose,
-  isMobile,
-  onHelp,
-  userLocation,
-}) {
-  const [localFilters, setLocalFilters] = useState(filters);
-
-  useEffect(() => {
-    setLocalFilters(filters);
-  }, [filters]);
-
-  const ORDERED_KEYS = useMemo(() => {
-    const uniq = Array.from(new Set(PRIMARY_ORDER));
-    return uniq.filter((k) => PRIMARY_META[k]);
-  }, []);
-
-  const handleApply = () => {
-    setFilters(localFilters);
-    if (isMobile) onClose?.();
+function FilterPanel({ filters, setFilters, onClose, isMobile, onHelp, userLocation }) {
+  const toggleResourceType = (type) => {
+    setFilters((prev) => ({
+      ...prev,
+      resourceTypes: prev.resourceTypes.includes(type)
+        ? prev.resourceTypes.filter((t) => t !== type)
+        : [...prev.resourceTypes, type],
+    }));
   };
 
-  const handleReset = () => {
-    const reset = {
-      resourceTypes: [],
-      distance: 2,
-      openNow: false,
-    };
-    setLocalFilters(reset);
-    setFilters(reset);
+  const selectOnly = (type) => {
+    setFilters((prev) => ({
+      ...prev,
+      resourceTypes: [type],
+    }));
   };
-
-  const togglePrimary = (key, checked) => {
-    const current = new Set(localFilters.resourceTypes);
-    if (checked) current.add(key);
-    else current.delete(key);
-    setLocalFilters({ ...localFilters, resourceTypes: Array.from(current) });
-  };
-
-  const selectAll = () =>
-    setLocalFilters({ ...localFilters, resourceTypes: ORDERED_KEYS.slice() });
-  const clearAll = () =>
-    setLocalFilters({ ...localFilters, resourceTypes: [] });
 
   return (
     <div className={styles.root}>
-      <div className={styles.bar}>
-        <h2 className={styles.title}>Filters</h2>
-        {isMobile && (
-          <button onClick={onClose} className={styles.close}>
-            ✕
+      {/* Header */}
+      {isMobile && (
+        <div className={styles.bar}>
+          <h2 className={styles.title}>Filters</h2>
+          <button onClick={onClose} className={styles.close} aria-label="Close filters">
+            <X size={24} />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
+      {/* Resource Types Section */}
       <div className={styles.section}>
-        <div className={styles.bar} style={{ alignItems: "baseline" }}>
-          <h3 className={styles.sectionTitle}>Resource Type</h3>
-          <div className={styles.controls}>
-            <button onClick={selectAll} type="button" className={styles.btn}>
-              All
-            </button>
-            <button onClick={clearAll} type="button" className={styles.btn}>
-              None
-            </button>
-          </div>
+        <h3 className={styles.sectionTitle}>Resource Type</h3>
+        
+        <div className={styles.controls}>
+          <button
+            onClick={() =>
+              setFilters((prev) => ({
+                ...prev,
+                resourceTypes: Object.keys(RESOURCE_ICONS),
+              }))
+            }
+            className={styles.btn}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilters((prev) => ({ ...prev, resourceTypes: [] }))}
+            className={styles.btn}
+          >
+            None
+          </button>
         </div>
 
-        {ORDERED_KEYS.map((key) => {
-          const cfg = PRIMARY_META[key];
-          const checked = localFilters.resourceTypes.includes(key);
-          return (
-            <label key={key} className={styles.checkboxRow}>
-              <input
-                type="checkbox"
-                checked={checked}
-                onChange={(e) => togglePrimary(key, e.target.checked)}
-                className={styles.checkbox}
-              />
-              <span className={styles.icon}>{cfg.symbol}</span>
-              <span>{cfg.label}</span>
-              {checked && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setLocalFilters({ ...localFilters, resourceTypes: [key] })
-                  }
-                  className={styles.only}
-                >
-                  only
-                </button>
-              )}
-            </label>
-          );
-        })}
+        {/* Resource Type Checkboxes with Icons */}
+        {Object.entries(RESOURCE_ICONS).map(([type, { icon: Icon, color, label }]) => (
+          <label key={type} className={styles.checkboxRow}>
+            <input
+              type="checkbox"
+              checked={filters.resourceTypes.includes(type)}
+              onChange={() => toggleResourceType(type)}
+              className={styles.checkbox}
+            />
+            
+            {/* Icon with colored background */}
+            <div 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                backgroundColor: color,
+                color: 'white',
+                marginRight: 8,
+                flexShrink: 0
+              }}
+            >
+              <Icon size={16} strokeWidth={2.5} />
+            </div>
+            
+            <span style={{ flex: 1 }}>{label}</span>
+            
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                selectOnly(type);
+              }}
+              className={styles.only}
+            >
+              Only
+            </button>
+          </label>
+        ))}
       </div>
 
+      {/* Distance Filter */}
       <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>
-          Distance: {localFilters.distance} miles
-        </h3>
+        <h3 className={styles.sectionTitle}>Distance</h3>
         <input
           type="range"
-          min="0.5"
+          min="1"
           max="10"
           step="0.5"
-          value={localFilters.distance}
+          value={filters.distance}
           onChange={(e) =>
-            setLocalFilters({
-              ...localFilters,
+            setFilters((prev) => ({
+              ...prev,
               distance: parseFloat(e.target.value),
-            })
+            }))
           }
           className={styles.rangeInput}
         />
         <div className={styles.rangeMeta}>
-          <span>0.5 mi</span>
-          <span>10 mi</span>
+          <span>1 mile</span>
+          <strong>{filters.distance} miles</strong>
+          <span>10 miles</span>
         </div>
         {!userLocation && (
           <p className={styles.distanceNote}>
-            📍 Enable location to use distance filter
+            Enable location to use distance filter
           </p>
         )}
       </div>
 
+      {/* Open Now Filter */}
       <div className={styles.section}>
         <label className={styles.checkboxRow}>
           <input
             type="checkbox"
-            checked={localFilters.openNow}
+            checked={filters.openNow}
             onChange={(e) =>
-              setLocalFilters({ ...localFilters, openNow: e.target.checked })
+              setFilters((prev) => ({
+                ...prev,
+                openNow: e.target.checked,
+              }))
             }
             className={styles.checkbox}
           />
@@ -144,23 +146,41 @@ export default function FilterPanel({
         </label>
       </div>
 
-      <div className={styles.footer}>
-        <button onClick={handleApply} className={styles.apply}>
-          Apply Filters
-        </button>
-        <button onClick={handleReset} className={styles.reset}>
-          Reset
-        </button>
-      </div>
+      {/* Action Buttons */}
+      {isMobile && (
+        <>
+          <div className={styles.footer}>
+            <button
+              onClick={() => {
+                setFilters({ resourceTypes: [], distance: 2, openNow: false });
+              }}
+              className={styles.reset}
+            >
+              Reset Filters
+            </button>
+            <button onClick={onClose} className={styles.apply}>
+              Apply Filters
+            </button>
+          </div>
 
-      {/* Only show Help button on desktop */}
+          <div className={styles.helpFooter}>
+            <button onClick={onHelp} className={styles.help}>
+              Need Help?
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Desktop Help Button */}
       {!isMobile && (
         <div className={styles.helpFooter}>
           <button onClick={onHelp} className={styles.help}>
-            Help
+            Need Help?
           </button>
         </div>
       )}
     </div>
   );
 }
+
+export default FilterPanel;

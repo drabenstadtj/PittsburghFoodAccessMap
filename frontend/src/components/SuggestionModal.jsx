@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createSuggestion } from "../services/api";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./SuggestionModal.module.css";
 
@@ -25,21 +26,10 @@ export default function SuggestionModal({ onClose }) {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/suggestions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit suggestion");
-      }
+      await createSuggestion(formData);
 
       setSuccess(true);
       
-      // Auto-close after 5 seconds
       setTimeout(() => {
         onClose();
       }, 5000);

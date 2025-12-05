@@ -50,6 +50,24 @@ def get_food_resources():
         "features": [resource_to_geojson(r) for r in resources]
     })
 
+@food_resource_bp.route("/api/food-resources/types", methods=["GET"])
+def get_resource_types():
+    """
+    Get all unique resource types.
+    Public endpoint - no authentication required.
+    """
+    # Query distinct resource types from active resources
+    types = db.session.query(FoodResource.resource_type)\
+        .filter(FoodResource.is_active == True)\
+        .distinct()\
+        .order_by(FoodResource.resource_type)\
+        .all()
+    
+    # Extract the type strings from the query result tuples
+    type_list = [t[0] for t in types if t[0]]
+    
+    return jsonify({"types": type_list})
+
 @food_resource_bp.route("/api/food-resources/<int:id>", methods=["GET"])
 def get_food_resource(id):
     """

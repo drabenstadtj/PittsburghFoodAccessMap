@@ -222,7 +222,11 @@ function MainApp() {
       <div className={styles.app}>
         <div className={styles.leftSidebar}>
           <div className={styles.header}>
-            <h1 className={styles.headerTitle}>Pittsburgh Food Access Map</h1>
+            <img 
+              src="/PPI_Logo_white.svg" 
+              alt="Pittsburgh Food Access Map" 
+              className={styles.headerLogo}
+            />
           </div>
 
           <div className={styles.searchContainer}>
@@ -302,7 +306,11 @@ function MainApp() {
   return (
     <div className={styles.mobileApp}>
       <div className={styles.mobileHeader}>
-        <h1 className={styles.mobileHeaderTitle}>PGH Food Map</h1>
+        <img 
+          src="/PPI_Logo_white.svg" 
+          alt="PGH Food Map" 
+          className={styles.mobileHeaderLogo}
+        />
       </div>
 
       <div className={styles.mobileMain}>

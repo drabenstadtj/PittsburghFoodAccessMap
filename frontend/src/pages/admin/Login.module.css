@@ -1,32 +1,44 @@
+@import "../../styles/tokens.css";
+
 .container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--brand);  /* Solid brand color */
   padding: 20px;
 }
 
 .loginBox {
   background: white;
-  padding: 40px;
+  padding: 48px 40px 40px;
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(60, 105, 135, 0.3);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 24px;
 }
 
 .title {
-  margin: 0 0 8px;
-  font-size: 28px;
+  margin: 0 0 32px;
+  font-size: 24px;
   text-align: center;
-  color: #1a202c;
+  color: var(--dark);
+  font-weight: 700;
 }
 
 .subtitle {
   margin: 0 0 32px;
   text-align: center;
-  color: #718096;
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -55,30 +67,31 @@
 .label {
   font-weight: 600;
   font-size: 14px;
-  color: #2d3748;
+  color: var(--dark);
 }
 
 .input {
   padding: 12px;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--line-2);
   border-radius: 6px;
   font-size: 15px;
   transition: border-color 0.2s;
+  color: var(--text);
 }
 
 .input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--brand);
 }
 
 .input:disabled {
-  background: #f7fafc;
+  background: var(--surface);
   cursor: not-allowed;
 }
 
 .submitButton {
   padding: 14px;
-  background: #667eea;
+  background: var(--brand);
   color: white;
   border: none;
   border-radius: 6px;
@@ -90,11 +103,11 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #5568d3;
+  background: var(--brand-hover);
 }
 
 .submitButton:disabled {
-  background: #cbd5e0;
+  background: var(--line);
   cursor: not-allowed;
 }
 
@@ -102,15 +115,16 @@
   width: 100%;
   padding: 12px;
   background: transparent;
-  color: #718096;
+  color: var(--muted);
   border: none;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
   margin-top: 16px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .backButton:hover {
-  background: #f7fafc;
+  background: var(--surface);
+  color: var(--brand);
 }

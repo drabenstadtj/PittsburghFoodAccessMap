@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
+// import your API helper
+import { register as registerUser } from "../../services/api"; // adjust path as needed
+
 export default function Register() {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,16 +21,8 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Registration failed');
-      }
+      // call API wrapper instead of fetch()
+      await registerUser(formData);
 
       alert('Admin account created! You can now login.');
       navigate('/admin/login');
@@ -52,7 +47,9 @@ export default function Register() {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className={styles.input}
               required
               disabled={loading}
@@ -64,7 +61,9 @@ export default function Register() {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               className={styles.input}
               required
               disabled={loading}
@@ -76,7 +75,9 @@ export default function Register() {
             <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               className={styles.input}
               required
               minLength={8}

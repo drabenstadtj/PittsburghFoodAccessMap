@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { LayoutDashboard, AlertCircle, PlusCircle, Database, LogOut, Home } from 'lucide-react';
+import { LayoutDashboard, AlertCircle, PlusCircle, Database, LogOut, Home, Menu, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './AdminLayout.module.css';
 
 export default function AdminLayout() {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', exact: true },
@@ -22,11 +23,35 @@ export default function AdminLayout() {
     return location.pathname.startsWith(path);
   };
 
+  const handleNavClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className={styles.layout}>
-      <aside className={styles.sidebar}>
+      {isMobileMenuOpen && (
+        <div
+          className={styles.backdrop}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <button
+        className={styles.mobileMenuToggle}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        aria-label="Toggle menu"
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      <aside className={`${styles.sidebar} ${isMobileMenuOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.logo}>
-          <h1>Admin Panel</h1>
+          <img 
+            src="/PPI_Logo_white.svg" 
+            alt="Admin Panel" 
+            className={styles.logoImage}
+          />
           <p>{user?.name}</p>
         </div>
         
@@ -38,6 +63,7 @@ export default function AdminLayout() {
               className={`${styles.navItem} ${
                 isActive(item.path, item.exact) ? styles.navItemActive : ''
               }`}
+              onClick={handleNavClick}
             >
               <item.icon size={20} />
               <span>{item.label}</span>
@@ -46,11 +72,11 @@ export default function AdminLayout() {
         </nav>
 
         <div className={styles.bottomActions}>
-          <Link to="/" className={styles.homeButton}>
+          <Link to="/" className={styles.homeButton} onClick={handleNavClick}>
             <Home size={20} />
             <span>Back to Map</span>
           </Link>
-          <button onClick={logout} className={styles.logoutButton}>
+          <button onClick={() => { logout(); handleNavClick(); }} className={styles.logoutButton}>
             <LogOut size={20} />
             <span>Logout</span>
           </button>

@@ -16,7 +16,6 @@
   height: calc(140px + env(safe-area-inset-bottom, 16px));
 }
 
-/* header */
 .bar {
   display: flex;
   justify-content: space-between;
@@ -27,6 +26,8 @@
 .title {
   margin: 0;
   font-size: 20px;
+  color: var(--brand);
+  font-weight: 700;
 }
 
 .close {
@@ -34,6 +35,12 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: var(--brand);
 }
 
 /* sections */
@@ -44,7 +51,8 @@
 .sectionTitle {
   font-size: 16px;
   margin-bottom: 12px;
-  color: var(--muted);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .controls {
@@ -62,13 +70,22 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  margin-top: 10px;
   cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.checkboxRow:hover {
+  background: var(--surface);
 }
 
 .checkbox {
   margin-right: 10px;
   width: 18px;
   height: 18px;
+  accent-color: var(--brand);
 }
 
 .icon {
@@ -89,21 +106,27 @@
   border: 1px solid var(--line-2);
   border-radius: 6px;
   background: var(--bg);
+  transition: border-color 0.2s;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--brand);
 }
 
 .rangeInput {
   width: 100%;
   margin-bottom: 8px;
+  accent-color: var(--brand);
 }
 
 .rangeMeta {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--muted-2);
+  color: var(--muted);
 }
 
-/* Main footer with Apply/Reset */
 .footer {
   position: sticky;
   bottom: 60px;
@@ -132,10 +155,9 @@
   padding: 12px;
   font-weight: 700;
   background: var(--surface);
-  color: var(--muted);
+  color: var(--text);
 }
 
-/* Separate Help footer at very bottom */
 .helpFooter {
   position: sticky;
   bottom: 0;
@@ -153,18 +175,19 @@
   padding: 12px;
   font-size: 14px;
   font-weight: 500;
-  background: #4a5568;
+  background: var(--brand);
   color: #ffffff;
-  border: 1px dashed #718096;
+  border: 1px dashed var(--brand-light);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .help:hover {
-  background: #5a6678;
+  background: var(--brand-hover);
   border-style: solid;
 }
+
 .distanceNote {
   margin-top: 8px;
   font-size: 13px;

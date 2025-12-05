@@ -20,16 +20,19 @@
   border-radius: 6px;
   background: var(--bg);
   color: var(--text);
+  transition: border-color 0.2s;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #FFB81C;
+  border-color: var(--brand);
 }
 
 .h2 {
   margin-bottom: 20px;
   font-size: 20px;
+  color: var(--dark);
+  font-weight: 700;
 }
 
 .list {

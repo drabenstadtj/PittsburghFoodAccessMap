@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import { calculateDistance } from "../utils/mapUtils";
 import { metaForType } from "../constants/resourceIcons";
 import styles from "./ResourceCard.module.css";
@@ -80,7 +81,7 @@ export default function ResourceCard({
       return;
     }
     setOpenNow(currentTime >= rng.open && currentTime <= rng.close);
-  }, [resource]);
+  }, [resource, parseRange]);
 
   useEffect(() => {
     if (!userLocation) {
@@ -98,14 +99,27 @@ export default function ResourceCard({
     }
   }, [userLocation, resource]);
 
-  const type = resource?.properties?.resource_type;
+  const type = resource?.properties?.primary_type || resource?.properties?.resource_type;
   const meta = metaForType(type);
+  const IconComponent = meta.icon;
 
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <span className={styles.icon} style={{ background: meta.color }}>
-          {meta.symbol}
+        <span 
+          className={styles.icon} 
+          style={{ 
+            backgroundColor: meta.color,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 28,
+            height: 28,
+            borderRadius: '50%',
+            color: 'white'
+          }}
+        >
+          <IconComponent size={16} strokeWidth={2.5} />
         </span>
         <h3 className={styles.title}>{resource?.properties?.name}</h3>
         <span className={styles.pill}>{meta.label}</span>
@@ -128,17 +142,6 @@ export default function ResourceCard({
         {resource?.properties?.phone && (
           <p className={styles.meta}>📞 {resource.properties.phone}</p>
         )}
-        {resource?.properties?.website && (
-          <p className={styles.meta}>
-            <a
-              href={resource.properties.website}
-              target="__blank"
-              rel="noreferrer"
-            >
-              Website
-            </a>
-          </p>
-        )}
       </div>
 
       <div className={styles.buttons}>
@@ -151,6 +154,17 @@ export default function ResourceCard({
         <button className={styles.btn} onClick={() => onMoreInfo(resource)}>
           More Info
         </button>
+        {resource?.properties?.website && (
+          <a
+            href={resource.properties.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.iconBtn}
+            title="Visit website"
+          >
+            <ExternalLink size={18} />
+          </a>
+        )}
       </div>
     </div>
   );

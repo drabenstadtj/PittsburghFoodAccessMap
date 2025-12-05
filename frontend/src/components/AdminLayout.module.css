@@ -1,21 +1,27 @@
+@import "../styles/tokens.css";
+
 .layout {
   display: flex;
   height: 100vh;
-  background: #f7fafc;
+  background: var(--surface);
 }
 
 .sidebar {
   width: 260px;
-  background: #1a202c;
+  background: var(--brand);
   color: white;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #2d3748;
+  border-right: 1px solid var(--brand-hover);
 }
 
 .logo {
   padding: 24px 20px;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid var(--brand-hover);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .logo h1 {
@@ -24,10 +30,19 @@
   color: white;
 }
 
+.logoImage {
+  height: 48px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  margin-bottom: 12px;
+  display: block;
+}
+
 .logo p {
   margin: 0;
   font-size: 13px;
-  color: #a0aec0;
+  color: var(--accent-1);
 }
 
 .nav {
@@ -43,7 +58,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: #cbd5e0;
+  color: #e8eef2;
   text-decoration: none;
   border-radius: 6px;
   transition: all 0.2s;
@@ -51,22 +66,24 @@
 }
 
 .navItem:hover {
-  background: #2d3748;
+  background: var(--brand-hover);
   color: white;
 }
 
 .navItemActive {
-  background: #667eea;
+  background: rgba(255, 255, 255, 0.15);
   color: white;
+  font-weight: 600;
+  border-left: 3px solid #fff;
 }
 
 .navItemActive:hover {
-  background: #5568d3;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .bottomActions {
   padding: 12px;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid var(--brand-hover);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -78,7 +95,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: #cbd5e0;
+  color: #e8eef2;
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -91,7 +108,7 @@
 
 .homeButton:hover,
 .logoutButton:hover {
-  background: #2d3748;
+  background: var(--brand-hover);
   color: white;
 }
 
@@ -104,4 +121,102 @@
   padding: 32px;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+/* Mobile Menu Toggle Button */
+.mobileMenuToggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.mobileMenuToggle:hover {
+  background: var(--brand-hover);
+}
+
+.mobileMenuToggle:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .backdrop {
+    display: block;
+  }
+
+  .mobileMenuToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100vh;
+    width: 260px;
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebarOpen {
+    left: 0;
+  }
+
+  .main {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .content {
+    padding: 72px 20px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 72px 16px 16px;
+  }
+
+  .logo {
+    padding: 20px 16px;
+  }
+
+  .logoImage {
+    height: 40px;
+  }
+
+  .navItem,
+  .homeButton,
+  .logoutButton {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
 }

@@ -29,8 +29,12 @@ export default function AdminLogin() {
   return (
     <div className={styles.container}>
       <div className={styles.loginBox}>
+        <img 
+          src="/PPI_Logo.svg" 
+          alt="Pittsburgh Food Access Map" 
+          className={styles.logo}
+        />
         <h1 className={styles.title}>Admin Login</h1>
-        <p className={styles.subtitle}>Pittsburgh Food Access Map</p>
 
         {error && <div className={styles.error}>{error}</div>}
 

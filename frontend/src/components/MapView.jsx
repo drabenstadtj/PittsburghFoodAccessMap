@@ -1,24 +1,52 @@
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
+import { renderToStaticMarkup } from "react-dom/server";
 import LocationHandler from "./LocationHandler";
-import { createCustomIcon } from "../utils/mapUtils";
 import { metaForType } from "../constants/resourceIcons";
 import styles from "./MapView.module.css";
 
-// New component to handle zooming to user location
 function ZoomToLocation({ userLocation }) {
   const map = useMap();
   
   useEffect(() => {
     if (userLocation) {
       map.flyTo(userLocation, 15, {
-        duration: 1.5 // smooth animation
+        duration: 1.5 
       });
     }
   }, [userLocation, map]);
   
   return null;
+}
+
+// Create custom marker icon with Lucide icon
+function createLucideMarkerIcon(color, IconComponent) {
+  const iconHtml = renderToStaticMarkup(
+    <div
+      style={{
+        backgroundColor: color,
+        width: '32px',
+        height: '32px',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '3px solid white',
+        boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+      }}
+    >
+      <IconComponent size={18} color="white" strokeWidth={2.5} />
+    </div>
+  );
+
+  return L.divIcon({
+    html: iconHtml,
+    className: 'custom-marker-icon',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
 }
 
 export default function MapView({
@@ -46,13 +74,15 @@ export default function MapView({
         <ZoomToLocation userLocation={userLocation} />
         
         {filteredResources.map((resource) => {
-          const meta = metaForType(resource?.properties?.resource_type);
+          const meta = metaForType(resource?.properties?.primary_type);
           const [lng, lat] = resource.geometry.coordinates;
+          const IconComponent = meta.icon;
+          
           return (
             <Marker
               key={resource.properties.id ?? `${lat},${lng}`}
               position={[lat, lng]}
-              icon={createCustomIcon(meta.color, meta.symbol)}
+              icon={createLucideMarkerIcon(meta.color, IconComponent)}
             >
               <Popup>
                 <div style={{ minWidth: 200 }}>

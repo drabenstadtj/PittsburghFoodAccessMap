@@ -1,0 +1,400 @@
+@import "../../styles/tokens.css";
+
+.container {
+  margin-bottom: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggleBtn {
+  padding: 6px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--brand);
+  font-weight: 500;
+}
+
+.toggleBtn:hover {
+  background: var(--brand);
+  color: white;
+}
+
+.editor {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--bg);
+}
+
+.quickActions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-2);
+  flex-wrap: wrap;
+}
+
+.quickBtn {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.quickBtn:hover {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+
+.daysList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dayRow {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  gap: 16px;
+}
+
+.dayLabel {
+  min-width: 100px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--dark);
+}
+
+.hoursDisplay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hoursText {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.dayActions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.iconBtn {
+  padding: 4px 8px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBtn:hover {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+
+.textBtn {
+  padding: 4px 8px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.textBtn:hover {
+  background: var(--surface);
+  color: var(--brand);
+}
+
+.formatHelper {
+  padding: 10px 12px;
+  background: #f0f7ff;
+  border-left: 3px solid var(--brand);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.formatHelper strong {
+  color: var(--brand);
+}
+
+.editRow {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeInputRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.timeInputGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.timeLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  min-width: 40px;
+}
+
+.timeInput {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.timeInput:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(60, 105, 135, 0.1);
+}
+
+.timeInput::placeholder {
+  color: var(--muted-2);
+  font-weight: 400;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+}
+
+.validationError {
+  padding: 8px 12px;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 6px;
+  color: #c33;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.saveBtn {
+  padding: 8px 16px;
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.saveBtn:hover {
+  background: var(--brand-hover);
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  background: white;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cancelBtn:hover {
+  background: var(--surface);
+}
+
+.currentValue {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid var(--brand);
+}
+
+.helperText {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.helperText strong {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .quickActions {
+    flex-direction: column;
+  }
+
+  .quickBtn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .dayRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .dayLabel {
+    min-width: auto;
+    font-size: 15px;
+  }
+
+  .hoursDisplay {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .hoursText {
+    text-align: center;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .dayActions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .iconBtn,
+  .textBtn {
+    flex: 1;
+    min-width: 80px;
+    justify-content: center;
+  }
+
+  .timeInputRow {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .timeInputGroup {
+    width: 100%;
+  }
+
+  .timeLabel {
+    min-width: 50px;
+  }
+
+  .editActions {
+    flex-direction: column;
+  }
+
+  .saveBtn,
+  .cancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .editor {
+    padding: 12px;
+  }
+
+  .dayRow {
+    padding: 10px;
+  }
+
+  .dayLabel {
+    font-size: 14px;
+  }
+
+  .formatHelper {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+
+  .quickBtn {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .textBtn,
+  .iconBtn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .timeInput {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .currentValue {
+    padding: 8px 10px;
+  }
+
+  .helperText {
+    font-size: 12px;
+  }
+}
