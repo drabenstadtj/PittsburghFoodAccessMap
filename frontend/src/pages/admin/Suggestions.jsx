@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Search, Filter, Eye, Check, X, Trash2, MapPin } from "lucide-react";
+import { Search, Filter, Eye, Check, X, Trash2, MapPin, Plus } from "lucide-react";
 import styles from "./Suggestions.module.css";
 import {
   fetchSuggestions as apiFetchSuggestions,
   updateSuggestionStatus,
   deleteSuggestion,
+  createResourceFromSuggestion,
 } from "../../services/api";
 
 export default function Suggestions() {
@@ -17,6 +18,13 @@ export default function Suggestions() {
   const [showModal, setShowModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [adminNotes, setAdminNotes] = useState("");
+  const [showCreateResourceModal, setShowCreateResourceModal] = useState(false);
+  const [geocoding, setGeocoding] = useState(false);
+  const [geocodeMessage, setGeocodeMessage] = useState("");
+  const [resourceFormData, setResourceFormData] = useState({
+    latitude: "",
+    longitude: "",
+  });
 
   useEffect(() => {
     loadSuggestions();
@@ -110,6 +118,98 @@ export default function Suggestions() {
       address
     )}`;
     window.open(url, "_blank");
+  };
+
+  const handleCreateResource = (suggestion) => {
+    setSelectedSuggestion(suggestion);
+    setResourceFormData({
+      latitude: "",
+      longitude: "",
+    });
+    setGeocodeMessage("");
+    setShowCreateResourceModal(true);
+  };
+
+  const geocodeAddress = async () => {
+    if (!selectedSuggestion) return;
+
+    setGeocoding(true);
+    setGeocodeMessage("Searching...");
+
+    try {
+      // Try different search strategies
+      const searchQueries = [
+        selectedSuggestion.address + ", Pittsburgh, PA",
+        selectedSuggestion.address,
+        selectedSuggestion.address + ", Pittsburgh",
+      ];
+
+      let result = null;
+
+      for (const query of searchQueries) {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?` +
+          `q=${encodeURIComponent(query)}` +
+          `&format=json&limit=1`,
+          {
+            headers: {
+              'User-Agent': 'PittsburghFoodAccessMap/1.0'
+            }
+          }
+        );
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+          const lat = parseFloat(data[0].lat);
+          const lon = parseFloat(data[0].lon);
+
+          // Pittsburgh area validation
+          if (lat >= 40.2 && lat <= 40.7 && lon >= -80.2 && lon <= -79.7) {
+            result = data[0];
+            break;
+          }
+        }
+      }
+
+      if (result) {
+        setResourceFormData({
+          latitude: result.lat,
+          longitude: result.lon,
+        });
+        const locationName = result.display_name.split(',').slice(0, 2).join(',');
+        setGeocodeMessage(`✓ Found: ${locationName}`);
+      } else {
+        setGeocodeMessage("Address not found. Please enter coordinates manually.");
+      }
+    } catch (error) {
+      console.error("Geocoding error:", error);
+      setGeocodeMessage("Geocoding failed. Please enter coordinates manually.");
+    } finally {
+      setGeocoding(false);
+    }
+  };
+
+  const handleSubmitResource = async () => {
+    if (!selectedSuggestion) return;
+
+    if (!resourceFormData.latitude || !resourceFormData.longitude) {
+      alert("Please provide latitude and longitude");
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      await createResourceFromSuggestion(selectedSuggestion.id, resourceFormData);
+      alert("Resource created successfully!");
+      setShowCreateResourceModal(false);
+      setShowModal(false);
+      loadSuggestions();
+    } catch (error) {
+      console.error("Error creating resource:", error);
+      alert(error.message || "Failed to create resource");
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   if (loading) {
@@ -400,7 +500,7 @@ export default function Suggestions() {
                 </div>
               )}
 
-              <div className={styles.detailItem}>
+              <div className={`${styles.detailItem} ${styles.submittedDate}`}>
                 <strong>Submitted:</strong>
                 <span>
                   {new Date(selectedSuggestion.created_at).toLocaleString()}
@@ -419,6 +519,20 @@ export default function Suggestions() {
                       rows={3}
                     />
                   </label>
+                </div>
+              )}
+
+              {selectedSuggestion.created_resource_id && (
+                <div className={styles.detailSection} style={{
+                  backgroundColor: "#d4edda",
+                  padding: "12px",
+                  borderRadius: "6px",
+                  border: "1px solid #c3e6cb"
+                }}>
+                  <strong style={{ color: "#155724" }}>✓ Resource Created:</strong>
+                  <p style={{ color: "#155724", marginTop: "4px" }}>
+                    A resource (ID: #{selectedSuggestion.created_resource_id}) has been created from this suggestion.
+                  </p>
                 </div>
               )}
 
@@ -451,6 +565,31 @@ export default function Suggestions() {
                   >
                     {actionLoading ? "Updating..." : "Approve"}
                   </button>
+                  <button
+                    onClick={() => handleCreateResource(selectedSuggestion)}
+                    className={styles.btnPrimary}
+                    disabled={actionLoading || selectedSuggestion.created_resource_id}
+                    title={selectedSuggestion.created_resource_id ? "Resource already created" : "Create a resource from this suggestion"}
+                  >
+                    <Plus size={16} /> {selectedSuggestion.created_resource_id ? "Resource Already Created" : "Create Resource"}
+                  </button>
+                </>
+              ) : selectedSuggestion.status === "approved" ? (
+                <>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className={styles.btnSecondary}
+                  >
+                    Close
+                  </button>
+                  <button
+                    onClick={() => handleCreateResource(selectedSuggestion)}
+                    className={styles.btnPrimary}
+                    disabled={actionLoading || selectedSuggestion.created_resource_id}
+                    title={selectedSuggestion.created_resource_id ? "Resource already created" : "Create a resource from this suggestion"}
+                  >
+                    <Plus size={16} /> {selectedSuggestion.created_resource_id ? "Resource Already Created" : "Create Resource"}
+                  </button>
                 </>
               ) : (
                 <button
@@ -460,6 +599,133 @@ export default function Suggestions() {
                   Close
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCreateResourceModal && selectedSuggestion && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={() => setShowCreateResourceModal(false)}
+        >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Create Resource from Suggestion</h2>
+              <button
+                onClick={() => setShowCreateResourceModal(false)}
+                className={styles.closeBtn}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              <div className={styles.detailSection}>
+                <strong>Creating resource for:</strong>
+                <p>{selectedSuggestion.name}</p>
+                <p className={styles.muted}>{selectedSuggestion.address}</p>
+              </div>
+
+              <div className={styles.formSection}>
+                <p className={styles.infoText}>
+                  To place this location on the map, we need its coordinates
+                  (latitude and longitude). Click the button below to automatically
+                  find them, or enter them manually.
+                </p>
+
+                <button
+                  onClick={geocodeAddress}
+                  className={styles.btnSecondary}
+                  disabled={geocoding}
+                  style={{ marginBottom: "8px", width: "100%" }}
+                >
+                  {geocoding ? "Finding location..." : "Find Coordinates from Address"}
+                </button>
+
+                {geocodeMessage && (
+                  <div
+                    className={styles.geocodeMessage}
+                    style={{
+                      marginBottom: "16px",
+                      padding: "8px 12px",
+                      borderRadius: "4px",
+                      fontSize: "13px",
+                      backgroundColor: geocodeMessage.startsWith("✓") ? "#d4edda" : "#fff3cd",
+                      color: geocodeMessage.startsWith("✓") ? "#155724" : "#856404",
+                      border: `1px solid ${geocodeMessage.startsWith("✓") ? "#c3e6cb" : "#ffeaa7"}`
+                    }}
+                  >
+                    {geocodeMessage}
+                  </div>
+                )}
+
+                <div className={styles.formGroup}>
+                  <label>
+                    <strong>Latitude:</strong>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={resourceFormData.latitude}
+                    onChange={(e) =>
+                      setResourceFormData({
+                        ...resourceFormData,
+                        latitude: e.target.value,
+                      })
+                    }
+                    placeholder="40.4406"
+                    className={styles.input}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>
+                    <strong>Longitude:</strong>
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={resourceFormData.longitude}
+                    onChange={(e) =>
+                      setResourceFormData({
+                        ...resourceFormData,
+                        longitude: e.target.value,
+                      })
+                    }
+                    placeholder="-79.9959"
+                    className={styles.input}
+                  />
+                </div>
+
+                <div className={styles.helperText}>
+                  <small>
+                    💡 Tip: You can right-click on Google Maps and select
+                    coordinates to copy them.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                onClick={() => setShowCreateResourceModal(false)}
+                className={styles.btnSecondary}
+                disabled={actionLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmitResource}
+                className={styles.btnPrimary}
+                disabled={
+                  actionLoading ||
+                  !resourceFormData.latitude ||
+                  !resourceFormData.longitude
+                }
+              >
+                {actionLoading ? "Creating..." : "Create Resource"}
+              </button>
             </div>
           </div>
         </div>

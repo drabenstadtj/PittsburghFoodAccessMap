@@ -16,7 +16,7 @@ import HelpView from "./components/HelpView";
 
 import { useWindowSize } from "./hooks/useWindowSize";
 import { fetchResources } from "./services/api";
-import { calculateDistance } from "./utils/mapUtils";
+import { calculateDistance, isOpenNow } from "./utils/mapUtils";
 import { RESOURCE_ICONS } from "./constants/resourceIcons";
 import { toPrimary } from "./constants/categoryMap";
 import { requestLocation } from "./utils/location";
@@ -148,7 +148,7 @@ function MainApp() {
 
     // Apply open now filter
     if (filters.openNow) {
-      filtered = filtered.filter(() => Math.random() > 0.3);
+      filtered = filtered.filter((r) => isOpenNow(r.properties.hours));
     }
 
     setFilteredResources(filtered);

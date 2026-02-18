@@ -193,6 +193,7 @@
   background: #e2e8f0;
   color: #4a5568;
   text-transform: capitalize;
+  width: fit-content;
 }
 
 .statusBadge {
@@ -203,6 +204,7 @@
   font-weight: 600;
   color: white;
   text-transform: capitalize;
+  width: fit-content;
 }
 
 .actions {
@@ -309,6 +311,10 @@
   color: #4a5568;
   font-weight: 600;
   font-size: 14px;
+}
+
+.submittedDate {
+  margin-bottom: 24px;
 }
 
 .detailSection {
@@ -469,11 +475,86 @@
   background: #f7fafc;
 }
 
+.btnPrimary {
+  background: var(--brand, #3c6987);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: var(--brand-hover, #2d5166);
+}
+
 .btnSuccess:disabled,
 .btnDanger:disabled,
-.btnSecondary:disabled {
+.btnSecondary:disabled,
+.btnPrimary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.formSection {
+  margin-top: 16px;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2d3748;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--brand, #3c6987);
+  box-shadow: 0 0 0 3px rgba(60, 105, 135, 0.1);
+}
+
+.muted {
+  color: #718096;
+  font-size: 14px;
+}
+
+.infoText {
+  color: #4a5568;
+  background: #f7fafc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.helperText {
+  margin-top: 12px;
+  padding: 10px;
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+}
+
+.helperText small {
+  color: #78350f;
+  font-size: 13px;
 }
 
 /* Mobile Responsive Styles */
@@ -523,8 +604,10 @@
 
   .btnSuccess,
   .btnDanger,
-  .btnSecondary {
+  .btnSecondary,
+  .btnPrimary {
     width: 100%;
+    justify-content: center;
   }
 }
 

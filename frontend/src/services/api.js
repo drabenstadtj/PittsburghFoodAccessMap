@@ -113,6 +113,13 @@ export async function deleteSuggestion(id) {
   });
 }
 
+export async function createResourceFromSuggestion(id, data) {
+  return apiFetch(`/api/suggestions/${id}/create-resource`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
 export async function deleteReport(id) {
   return apiFetch(`/api/reports/${id}`, {
     method: "DELETE",

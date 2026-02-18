@@ -23,7 +23,8 @@ class Suggestion(db.Model):
     # Admin fields
     status = db.Column(db.String(20), default='pending')  # pending, approved, rejected
     admin_notes = db.Column(db.Text, nullable=True)
-    
+    created_resource_id = db.Column(db.Integer, nullable=True)  # ID of resource created from this suggestion
+
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -43,6 +44,7 @@ class Suggestion(db.Model):
             'submitter_email': self.submitter_email,
             'status': self.status,
             'admin_notes': self.admin_notes,
+            'created_resource_id': self.created_resource_id,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat()
         }
