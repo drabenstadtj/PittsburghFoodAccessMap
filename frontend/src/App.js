@@ -16,7 +16,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public routes*/}
+          {/* Public route*/}
           <Route path="/" element={<MainApp />} />
           
           {/* Admin login */}
