@@ -7,6 +7,7 @@ from app.utils.auth_utils import login_required, admin_required, get_current_use
 user_bp = Blueprint("user_bp", __name__)
 
 @user_bp.route("/api/auth/register", methods=["POST"])
+@admin_required
 def register():
     """Register a new user."""
     data = request.get_json()
@@ -37,11 +38,6 @@ def register():
             phone=data.get('phone', '').strip() or None
         )
         user.set_password(password)
-        
-        # First user becomes admin
-        if User.query.count() == 0:
-            user.is_admin = True
-        
         db.session.add(user)
         db.session.commit()
         

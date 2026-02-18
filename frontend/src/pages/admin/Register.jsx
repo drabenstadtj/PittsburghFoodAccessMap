@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Login.module.css';
 
@@ -37,7 +37,7 @@ export default function Register() {
     <div className={styles.container}>
       <div className={styles.loginBox}>
         <h1 className={styles.title}>Create Admin Account</h1>
-        <p className={styles.subtitle}>First user will be admin</p>
+        <p className={styles.subtitle}>Create a new admin account</p>
 
         {error && <div className={styles.error}>{error}</div>}
 

@@ -20,9 +20,8 @@ function App() {
           <Route path="/" element={<MainApp />} />
           
           {/* Admin login */}
-          <Route path="/admin/register" element={<Register />} />
           <Route path="/admin/login" element={<AdminLogin />} />
-          
+
           {/* Protected admin routes */}
           <Route
             path="/admin"
@@ -36,6 +35,7 @@ function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="suggestions" element={<Suggestions />} />
             <Route path="resources" element={<AdminResources />} />
+            <Route path="register" element={<Register />} />
           </Route>
 
           {/* Catch all */}
