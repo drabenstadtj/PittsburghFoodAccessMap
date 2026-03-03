@@ -1,28 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./DetailModal.module.css";
-
+import HoursDisplay from "../pages/admin/HoursDisplay";
 import ReportModal from "./ReportModal";
-
-// converts military time to 12 hour time 
-function military_to_twelve(t)
-{
-  // check that given argument is valid
-  if (!t || typeof t !== "string") return t;
-
-  return t.replace(
-    /\b(\d{1,2}):(\d{2})-(\d{1,2}):(\d{2})\b/g,
-    (_, h1, m1, h2, m2) => {
-      const format = (h, m) => {
-        h = parseInt(h, 10);
-        const period = h >= 12 ? "PM" : "AM";
-        h = h % 12 || 12; // 0 => 12
-        return `${h}:${m} ${period}`;
-      };
-      return `${format(h1, m1)}-${format(h2, m2)}`;
-    }
-  );
-}
 
 export default function DetailModal({ resource, onClose }) {
   const [showReportModal, setShowReportModal] = useState(false);
@@ -63,15 +43,7 @@ export default function DetailModal({ resource, onClose }) {
           {hours && (
             <div className={styles.block}>
               <strong>Hours:</strong>
-              <br />
-              {typeof hours === "object"
-                ? Object.entries(hours).map(([day, time]) => (
-                    <div key={day}>
-                      {day.charAt(0).toUpperCase() + day.slice(1)}: {military_to_twelve(time)}
-                    </div>
-                  ))
-                : military_to_twelve(hours)}
-
+              <HoursDisplay hours={hours} />
             </div>
           )}
 
