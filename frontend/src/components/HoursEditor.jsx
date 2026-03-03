@@ -64,21 +64,13 @@ export default function HoursEditor({ value, onChange }) {
 
   const normalizeTimeInput = (input) => {
     if (!input) return '';
-    
+
     // Remove extra spaces
     let cleaned = input.trim().toLowerCase();
-    
-    // Handle common formats:
-    // "9" -> "9:00 AM"
-    // "9am" -> "9:00 AM"
-    // "9:30" -> "9:30 AM"
-    // "9:30am" -> "9:30 AM"
-    // "17:00" -> "5:00 PM"
-    // "1700" -> "5:00 PM"
-    
+
     // Match various time patterns
     let match = cleaned.match(/^(\d{1,2}):?(\d{2})?\s*(am|pm)?$/);
-    
+
     if (!match) {
       // Try 4-digit military time: 0900, 1730
       match = cleaned.match(/^(\d{2})(\d{2})$/);
@@ -99,16 +91,11 @@ export default function HoursEditor({ value, onChange }) {
 
     // Auto-detect AM/PM if not specified
     if (!period) {
-      if (hour >= 1 && hour <= 7) {
-        // Assume AM for early hours
-        period = 'AM';
-      } else if (hour >= 8 && hour <= 11) {
-        // Ambiguous - default to AM
+      if (hour >= 1 && hour <= 11) {
         period = 'AM';
       } else if (hour === 12) {
         period = 'PM';
       } else if (hour >= 13 && hour <= 23) {
-        // Convert military time
         period = 'PM';
         hour = hour - 12;
       } else if (hour === 0) {
@@ -134,14 +121,14 @@ export default function HoursEditor({ value, onChange }) {
     const timeToMinutes = (timeStr) => {
       const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
       if (!match) return -1;
-      
+
       let hour = parseInt(match[1]);
       const minute = parseInt(match[2]);
       const period = match[3].toUpperCase();
-      
+
       if (period === 'PM' && hour !== 12) hour += 12;
       if (period === 'AM' && hour === 12) hour = 0;
-      
+
       return hour * 60 + minute;
     };
 
@@ -162,7 +149,7 @@ export default function HoursEditor({ value, onChange }) {
   const handleDayEdit = (day) => {
     const currentHours = hours[day];
     const parsed = parseTimeString(currentHours);
-    
+
     if (parsed) {
       setTempFrom(parsed.from);
       setTempTo(parsed.to);
@@ -170,7 +157,7 @@ export default function HoursEditor({ value, onChange }) {
       setTempFrom('');
       setTempTo('');
     }
-    
+
     setEditingDay(day);
     setValidationError('');
   };
@@ -184,7 +171,7 @@ export default function HoursEditor({ value, onChange }) {
 
     const fromNormalized = normalizeTimeInput(tempFrom);
     const toNormalized = normalizeTimeInput(tempTo);
-    
+
     const formattedTime = `${fromNormalized} - ${toNormalized}`;
     const newHours = {
       ...hours,
@@ -307,7 +294,7 @@ export default function HoursEditor({ value, onChange }) {
             {DAYS.map(day => (
               <div key={day} className={styles.dayRow}>
                 <div className={styles.dayLabel}>{DAY_LABELS[day]}</div>
-                
+
                 {editingDay === day ? (
                   <div className={styles.editRow}>
                     <div className={styles.timeInputRow}>
@@ -322,7 +309,7 @@ export default function HoursEditor({ value, onChange }) {
                           autoFocus
                         />
                       </div>
-                      
+
                       <div className={styles.timeInputGroup}>
                         <label className={styles.timeLabel}>To:</label>
                         <input
@@ -334,13 +321,13 @@ export default function HoursEditor({ value, onChange }) {
                         />
                       </div>
                     </div>
-                    
+
                     {validationError && (
                       <div className={styles.validationError}>
                         ⚠️ {validationError}
                       </div>
                     )}
-                    
+
                     <div className={styles.editActions}>
                       <button
                         type="button"

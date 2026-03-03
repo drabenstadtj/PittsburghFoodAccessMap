@@ -31,34 +31,42 @@ export default function Dashboard() {
   }, []);
 
   const fetchDashboardData = async () => {
-    try {
-      const [
-        reportsStats,
-        suggestionsStats,
-        resourcesData,
-        reportsData,
-        suggestionsData,
-      ] = await Promise.all([
-        fetchReportStats(),
-        fetchSuggestionStats(),
-        fetchResources(),
-        fetchReports("?status=pending"),
-        fetchSuggestions("?status=pending"),
-      ]);
+    const [
+      reportsStats,
+      suggestionsStats,
+      resourcesData,
+      reportsData,
+      suggestionsData,
+    ] = await Promise.allSettled([
+      fetchReportStats(),
+      fetchSuggestionStats(),
+      fetchResources(),
+      fetchReports("?status=pending"),
+      fetchSuggestions("?status=pending"),
+    ]);
 
+    if (reportsStats.status === "fulfilled" || suggestionsStats.status === "fulfilled" || resourcesData.status === "fulfilled") {
       setStats({
-        reports: reportsStats,
-        suggestions: suggestionsStats,
-        resources: { total: resourcesData.features?.length || 0 },
+        reports: reportsStats.value ?? { total: 0, pending: 0, reviewed: 0, resolved: 0 },
+        suggestions: suggestionsStats.value ?? { total: 0, pending: 0, approved: 0, rejected: 0 },
+        resources: { total: resourcesData.value?.features?.length || 0 },
       });
-
-      setRecentReports(reportsData.reports?.slice(0, 5) || []);
-      setRecentSuggestions(suggestionsData.suggestions?.slice(0, 5) || []);
-    } catch (error) {
-      console.error("Error fetching dashboard data:", error);
-    } finally {
-      setLoading(false);
     }
+
+    if (reportsData.status === "fulfilled") {
+      setRecentReports(reportsData.value?.reports?.slice(0, 5) || []);
+    }
+    if (suggestionsData.status === "fulfilled") {
+      setRecentSuggestions(suggestionsData.value?.suggestions?.slice(0, 5) || []);
+    }
+
+    const anyFailed = [reportsStats, suggestionsStats, resourcesData, reportsData, suggestionsData]
+      .some((r) => r.status === "rejected");
+    if (anyFailed) {
+      console.error("Some dashboard requests failed:", { reportsStats, suggestionsStats, resourcesData, reportsData, suggestionsData });
+    }
+
+    setLoading(false);
   };
 
   if (loading) {

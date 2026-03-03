@@ -8,8 +8,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import styles from "./Resources.module.css";
-import HoursEditor from "./HoursEditor";
-import HoursDisplay from "./HoursDisplay";
+import HoursEditor from "../../components/HoursEditor";
+import HoursDisplay from "../../components/HoursDisplay";
 import {
   fetchResources as apiFetchResources,
   fetchResourceTypes,
@@ -85,7 +85,7 @@ export default function Resources() {
         )}&limit=1`,
         {
           headers: {
-            "User-Agent": "FoodAccessApp/1.0", // Nominatim requires a user agent
+            "User-Agent": "PittsburghFoodAccessMap/1.0",
           },
         }
       );

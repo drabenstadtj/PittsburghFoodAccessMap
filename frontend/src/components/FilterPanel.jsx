@@ -1,6 +1,6 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { RESOURCE_ICONS } from '../constants/resourceIcons';
+import { RESOURCE_ICONS } from '../constants/resourceTypes';
 import styles from './FilterPanel.module.css';
 
 function FilterPanel({ filters, setFilters, onClose, isMobile, onHelp, userLocation }) {

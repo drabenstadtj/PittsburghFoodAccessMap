@@ -9,41 +9,41 @@ import Reports from "./pages/admin/Reports";
 import Suggestions from "./pages/admin/Suggestions";
 import AdminResources from "./pages/admin/Resources";
 import Register from "./pages/admin/Register";
-import MainApp from "./MainApp";
+import MapPage from "./pages/Map";
 
 function App() {
-  return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public route*/}
-          <Route path="/" element={<MainApp />} />
-          
-          {/* Admin login */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    {/* Public route*/}
+                    <Route path="/" element={<MapPage />} />
 
-          {/* Protected admin routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute requireAdmin>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="suggestions" element={<Suggestions />} />
-            <Route path="resources" element={<AdminResources />} />
-            <Route path="register" element={<Register />} />
-          </Route>
+                    {/* Admin login */}
+                    <Route path="/admin/login" element={<AdminLogin />} />
 
-          {/* Catch all */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
-  );
+                    {/* Protected admin routes */}
+                    <Route
+                        path="/admin"
+                        element={
+                            <ProtectedRoute requireAdmin>
+                                <AdminLayout />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route index element={<Dashboard />} />
+                        <Route path="reports" element={<Reports />} />
+                        <Route path="suggestions" element={<Suggestions />} />
+                        <Route path="resources" element={<AdminResources />} />
+                        <Route path="register" element={<Register />} />
+                    </Route>
+
+                    {/* Catch all */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
 
 export default App;

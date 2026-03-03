@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { calculateDistance } from "../utils/mapUtils";
-import { metaForType } from "../constants/resourceIcons";
+import { metaForType } from "../constants/resourceTypes";
 import styles from "./ResourceCard.module.css";
 
 export default function ResourceCard({
@@ -36,7 +36,7 @@ export default function ResourceCard({
     if (/^closed$/i.test(raw)) return { closed: true };
     const norm = raw.replace(/[–—]/g, "-");
     const [openStr, closeStr] = norm.split("-").map((t) => t?.trim());
-    if (!openStr || !closeStr) return null;
+    if (openStr === undefined || closeStr === undefined) return null;
     const open = parseTimeToHours(openStr);
     const close = parseTimeToHours(closeStr);
     if (open == null || close == null) return null;
@@ -81,7 +81,7 @@ export default function ResourceCard({
       return;
     }
     setOpenNow(currentTime >= rng.open && currentTime <= rng.close);
-  }, [resource, parseRange]);
+  }, [resource]);
 
   useEffect(() => {
     if (!userLocation) {

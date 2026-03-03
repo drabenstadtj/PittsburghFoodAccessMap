@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { RESOURCE_ICONS } from "../constants/resourceIcons";
+import { RESOURCE_ICONS } from "../constants/resourceTypes";
 import styles from "./DetailModal.module.css";
-import HoursDisplay from "../pages/admin/HoursDisplay";
+import HoursDisplay from "./HoursDisplay";
 import ReportModal from "./ReportModal";
 
 export default function DetailModal({ resource, onClose }) {
@@ -23,7 +23,7 @@ export default function DetailModal({ resource, onClose }) {
               {iconCfg?.label || resource.properties.resource_type}
             </div>
           </div>
-          <button onClick={onClose} className={styles.close}>
+          <button onClick={onClose} className={styles.close} aria-label="Close">
             ✕
           </button>
         </div>

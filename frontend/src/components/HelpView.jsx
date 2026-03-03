@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
-// import { RESOURCE_ICONS } from "../constants/resourceIcons";
 import styles from "./HelpView.module.css";
 import SuggestionModal from "./SuggestionModal";
 import { createReport } from "../services/api";
@@ -108,7 +107,7 @@ export default function HelpView({ onClose, isMobile }) {
           <div className={styles.modal}>
             <div className={styles.header}>
               <h2 className={styles.title}>Report an Issue</h2>
-              <button onClick={handleCloseModal} className={styles.close}>
+              <button onClick={handleCloseModal} className={styles.close} aria-label="Close">
                 ✕
               </button>
             </div>

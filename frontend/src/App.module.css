@@ -3,252 +3,254 @@
 
 /* Base app container */
 .app {
-  display: flex;
-  height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    height: 100vh;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Desktop Layout - Left Sidebar */
 .leftSidebar {
-  width: 320px;
-  background: white;
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
+    width: 320px;
+    background: white;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
-  padding: 20px;
-  border-bottom: 1px solid var(--line);
-  background: var(--brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--line);
+    background: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .headerTitle {
-  margin: 0;
-  font-size: 20px;
-  color: white;
-  font-weight: 700;
+    margin: 0;
+    font-size: 20px;
+    color: white;
+    font-weight: 700;
 }
 
 .headerLogo {
-  height: 40px;
-  width: auto;
-  max-width: 100%;
-  object-fit: contain;
+    height: 40px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 .searchContainer {
-  padding: 20px;
-  border-bottom: 1px solid var(--line);
+    padding: 20px;
+    border-bottom: 1px solid var(--line);
 }
 
 .searchInput {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid var(--line-2);
-  border-radius: 6px;
-  color: var(--text);
-  transition: border-color 0.2s;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid var(--line-2);
+    border-radius: 6px;
+    color: var(--text);
+    transition: border-color 0.2s;
 }
 
 .searchInput:focus {
-  outline: none;
-  border-color: var(--brand);
+    outline: none;
+    border-color: var(--brand);
 }
 
 .filterContainer {
-  flex: 1;
-  overflow: auto;
+    flex: 1;
+    overflow: auto;
 }
 
 /* Desktop Layout - Center Content */
 .centerContent {
-  flex: 1;
-  position: relative;
+    flex: 1;
+    position: relative;
 }
 
 .loadingContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  font-size: 18px;
-  color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 18px;
+    color: var(--muted);
 }
 
 /* Floating Locate Button */
 .locateButton {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  background: white;
-  border: 1px solid rgba(60, 105, 135, 0.15);
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(60, 105, 135, 0.2);
-  color: var(--brand);
-  transition: all 0.2s;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: white;
+    border: 1px solid rgba(60, 105, 135, 0.15);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(60, 105, 135, 0.2);
+    color: var(--brand);
+    transition: all 0.2s;
 }
 
 .locateButton:hover {
-  background: var(--surface);
-  border-color: var(--brand);
+    background: var(--surface);
+    border-color: var(--brand);
 }
 
 /* Count Badge */
 .countBadge {
-  position: absolute;
-  top: 10px;
-  left: 55px;
-  z-index: 1000;
-  background: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(60, 105, 135, 0.2);
-  font-size: 14px;
-  font-weight: bold;
-  color: var(--dark);
-  border: 1px solid var(--line);
+    position: absolute;
+    top: 10px;
+    left: 55px;
+    z-index: 1000;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(60, 105, 135, 0.2);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--dark);
+    border: 1px solid var(--line);
 }
 
 /* Mobile Layout */
 .mobileApp {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--surface);
 }
 
 .mobileHeader {
-  background: var(--brand);
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 4px rgba(60, 105, 135, 0.1);
+    background: var(--brand);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(60, 105, 135, 0.1);
 }
 
 .mobileHeaderTitle {
-  margin: 0;
-  font-size: 18px;
-  color: white;
-  font-weight: 700;
+    margin: 0;
+    font-size: 18px;
+    color: white;
+    font-weight: 700;
 }
 
 .mobileHeaderLogo {
-  height: 32px;
-  width: auto;
-  max-width: 80%;
-  object-fit: contain;
+    height: 32px;
+    width: auto;
+    max-width: 80%;
+    object-fit: contain;
 }
 
 .mobileMain {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
 }
 
 .mobileLocateButton {
-  position: fixed;
-  right: 16px;
-  z-index: 1500;
-  background: white;
-  border: 1px solid rgba(60, 105, 135, 0.15);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(60, 105, 135, 0.25);
-  color: var(--brand);
-  transition: all 0.2s;
+    position: fixed;
+    right: 16px;
+    z-index: 1500;
+    background: white;
+    border: 1px solid rgba(60, 105, 135, 0.15);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(60, 105, 135, 0.25);
+    color: var(--brand);
+    transition: all 0.2s;
 }
 
 .mobileLocateButton:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 /* Bottom Navigation */
 .bottomNav {
-  display: flex;
-  justify-content: space-around;
-  background: white;
-  border-top: 1px solid var(--line);
-  padding-top: 8px;
-  box-shadow: 0 -2px 4px rgba(60, 105, 135, 0.1);
-  position: sticky;
-  bottom: 0;
-  z-index: 100;
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
+    box-shadow: 0 -2px 4px rgba(60, 105, 135, 0.1);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
 }
 
 .navButton {
-  background: none;
-  border: none;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  position: relative;
-  transition: all 0.2s;
+    background: none;
+    border: none;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
 }
 
 .navButtonActive {
-  color: var(--brand);
+    color: var(--brand);
 }
 
 .navButtonInactive {
-  color: var(--muted);
+    color: var(--muted);
 }
 
 .navButton:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 .navButtonText {
-  font-size: 12px;
-  font-weight: 500;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .navBadge {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: var(--danger);
-  color: white;
-  border-radius: 10px;
-  padding: 2px 6px;
-  font-size: 10px;
-  font-weight: bold;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--danger);
+    color: white;
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: bold;
 }
 
 /* Mobile Filters Modal */
 .filtersModal {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  max-height: 80vh;
-  z-index: 1500;
-  box-shadow: 0 -4px 20px rgba(60, 105, 135, 0.2);
-  display: flex;
-  flex-direction: column;
-  border-top: 2px solid var(--line);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    max-height: 80vh;
+    z-index: 1500;
+    box-shadow: 0 -4px 20px rgba(60, 105, 135, 0.2);
+    display: flex;
+    flex-direction: column;
+    border-top: 2px solid var(--line);
 }

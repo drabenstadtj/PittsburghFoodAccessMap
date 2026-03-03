@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createSuggestion } from "../services/api";
-import { RESOURCE_ICONS } from "../constants/resourceIcons";
+import { RESOURCE_ICONS } from "../constants/resourceTypes";
 import styles from "./SuggestionModal.module.css";
 
 export default function SuggestionModal({ onClose }) {

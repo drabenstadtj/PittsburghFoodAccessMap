@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import { renderToStaticMarkup } from "react-dom/server";
 import LocationHandler from "./LocationHandler";
-import { metaForType } from "../constants/resourceIcons";
+import { metaForType } from "../constants/resourceTypes";
 import styles from "./MapView.module.css";
 
 function ZoomToLocation({ userLocation }) {
